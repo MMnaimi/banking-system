@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../static/css/profile_settings1.css">
+    <title>Profile Settings</title>
+</head>
+
+<body>
+    <div class="container rounded bg-white mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-3 border-right">
+                <div class="d-flex flex-column align-items-center text-center p-3 py-5"><span
+                        class="font-weight-bold">{{ form.username.data }}</span><span
+                        class="text-black-50"><span> {{ form.email.data }} </span></div>
+            </div>
+                <div class="col-md-5 border-right">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="text-right">{{ user.fullname }} </h4>
+                        </div>
+                        <form action="/update-user/{{ user.id }}" method="post">
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    {{ form.fullname.label(class="labels") }}
+                                    {{ form.fullname(class="form-control") }}
+                                    <!-- <label class="labels">fullName</label>
+                                    <input type="text" class="form-control" placeholder="full name" value=""> -->
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.username.label(class="labels") }}
+                                    {{ form.username(class="form-control") }}
+                                    
+                                    <!-- <label class="labels">Username</label>
+                                    <input type="text" class="form-control" value="MMnaimi" placeholder="Username"> -->
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12 mt-3">
+                                    {{ form.email.label(class="labels") }}
+                                    {{ form.email(class="form-control") }}
+                                    <!-- <label class="labels">Phone Number</label>
+                                    <input type="text" class="form-control" placeholder="enter phone number" value=""> -->
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    {{ form.phone.label(class="labels") }}
+                                    {{ form.phone(class="form-control") }}
+                                    <!-- <label class="labels">Phone Number</label>
+                                    <input type="text" class="form-control" placeholder="enter phone number" value=""> -->
+                                </div>
+                                <div class="col-md-12 mt-3" style="margin-top: 25px;">
+                                    {{ form.gender.label(class="labels") }}:
+                                    {% for option in form.gender %}
+                                    <div class="form-check form-check-inline">
+                                        {{option.label}}{{ option }}
+                                    </div>
+                                    {% endfor %}
+                                    <!-- <label class="labels">Gender</label>
+                                    <input type="text" class="form-control" placeholder="gender" value=""> -->
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    {{ form.password.label(class="labels") }}
+                                    {{ form.password(class="form-control", value="asdlfkj;lasdjf") }}
+                                    <!-- <label class="labels">Password</label>
+                                    <input type="text" class="form-control" placeholder="Password" value=""> -->
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    {{ form.birth_date.label(class="labels") }}
+                                    {{ form.birth_date(class="form-control") }}
+                                    <!-- <label class="labels">Date of Birth</label>
+                                    <input type="text" class="form-control" placeholder="Date of birth" value=""> -->
+                                </div>
+                            </div>
+                            <div class="mt-5 text-center">
+                                {{ form.submit(class="btn btn-primary profile-button", value="Save Profile") }}
+                                <!-- <button class="btn btn-primary profile-button" type="button">Save Profile</button> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</body>
+
+</html>

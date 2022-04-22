@@ -34,3 +34,12 @@ CSS
   text-decoration: none;
   margin-left: 5px;
 }
+#sign-in input, #sign-in input:focus {
+  background-color: #2dc997;
+  border-color: #2dc997;
+}
+#sign-in a {
+  color: #2dc997;
+  text-decoration: none;
+  margin-left: 5px;
+}

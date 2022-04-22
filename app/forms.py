@@ -10,7 +10,7 @@ class RegisterationForm(FlaskForm):
     gender = RadioField(choices=[('male','Male'), ('female','Female'), ('other', 'Other')])
     phone = StringField(label="Phone")
     password = PasswordField(label='Passsword', validators=[DataRequired(), Length(min = 8, max = 16)])
-    confirm_password = PasswordField(label='Confirm Password', validators=[DataRequired(), EqualTo('password', message="Enter the same password")])
+    confirm_password = PasswordField(label='Confirm Password', validators=[DataRequired()])
     submit = SubmitField(label='Sign up')
 
 class LoginForm(FlaskForm):
