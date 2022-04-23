@@ -29,29 +29,21 @@
                                 <div class="col-md-6">
                                     {{ form.fullname.label(class="labels") }}
                                     {{ form.fullname(class="form-control") }}
-                                    <!-- <label class="labels">fullName</label>
-                                    <input type="text" class="form-control" placeholder="full name" value=""> -->
                                 </div>
                                 <div class="col-md-6">
                                     {{ form.username.label(class="labels") }}
                                     {{ form.username(class="form-control") }}
-                                    
-                                    <!-- <label class="labels">Username</label>
-                                    <input type="text" class="form-control" value="MMnaimi" placeholder="Username"> -->
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12 mt-3">
                                     {{ form.email.label(class="labels") }}
                                     {{ form.email(class="form-control") }}
-                                    <!-- <label class="labels">Phone Number</label>
-                                    <input type="text" class="form-control" placeholder="enter phone number" value=""> -->
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     {{ form.phone.label(class="labels") }}
                                     {{ form.phone(class="form-control") }}
-                                    <!-- <label class="labels">Phone Number</label>
-                                    <input type="text" class="form-control" placeholder="enter phone number" value=""> -->
+
                                 </div>
                                 <div class="col-md-12 mt-3" style="margin-top: 25px;">
                                     {{ form.gender.label(class="labels") }}:
@@ -60,25 +52,26 @@
                                         {{option.label}}{{ option }}
                                     </div>
                                     {% endfor %}
-                                    <!-- <label class="labels">Gender</label>
-                                    <input type="text" class="form-control" placeholder="gender" value=""> -->
+
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     {{ form.password.label(class="labels") }}
                                     {{ form.password(class="form-control", value="asdlfkj;lasdjf") }}
-                                    <!-- <label class="labels">Password</label>
-                                    <input type="text" class="form-control" placeholder="Password" value=""> -->
+
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     {{ form.birth_date.label(class="labels") }}
                                     {{ form.birth_date(class="form-control") }}
-                                    <!-- <label class="labels">Date of Birth</label>
-                                    <input type="text" class="form-control" placeholder="Date of birth" value=""> -->
+
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    {{ form.role.label(class="labels") }}
+                                    {{ form.role(class="form-control",placeholder="Select Role") }}
+
                                 </div>
                             </div>
                             <div class="mt-5 text-center">
                                 {{ form.submit(class="btn btn-primary profile-button", value="Save Profile") }}
-                                <!-- <button class="btn btn-primary profile-button" type="button">Save Profile</button> -->
                             </div>
                         </form>
                     </div>

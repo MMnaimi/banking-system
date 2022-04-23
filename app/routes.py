@@ -1,5 +1,5 @@
 import email
-from flask import Flask, render_template, redirect, request, url_for, flash
+from flask import Flask, render_template, redirect, request, session, flash
 from app import app, db
 from app.forms import RegisterationForm, LoginForm
 from app.models import User
@@ -29,7 +29,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(f'Account created successfully fro {form.username.data}', category='success')
-        return render_template('login.html', form=form1)
+        return render_template('login.html',form=form1)
         
     return render_template("register.html", form=form)
 
@@ -71,16 +71,22 @@ def profile_settings(uid):
     form.password.data = user.password
     form.phone.data = user.phone
     form.gender.data = user.gender
+    form.role.data = user.role
     return render_template('profile_settings.html', form=form, user=user)
 
 
 # Edit user route
-@app.route('/update-user/<id>', methods=['GET', 'POST'])
-def update_user():
+@app.route('/update-user/<uid>', methods=['GET', 'POST'])
+def update_user(uid):
     if request.method == 'POST':
-        form =RegisterationForm()
-        record = User.query.filter_by(email=form.email.data).first()
-    return "Profile page "
+        record = User.query.filter_by(id=uid).first()
+        
+    return 
+@app.route('/delete/<uid>')
+def delete_user(uid):
+    User.query.filter_by(id=uid).delete()
+    db.session.commit()
+    return render_template('/users')
 
 # users list
 @app.route('/users')
@@ -89,3 +95,14 @@ def user_list():
     return render_template('users_list.html',users=users)
         
         
+def is_admin(uid):
+    user = User.query.filter_by(id=uid).first()
+    if user.role == 0:
+        return True
+    return False
+
+def is_sys_user(uid):
+    user = User.query.filter_by(id=uid).first()
+    if user.role == 1:
+        return True
+    return False
