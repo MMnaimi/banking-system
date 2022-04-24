@@ -1,3 +1,4 @@
+from enum import unique
 from flask import render_template
 from app import db,login_manager
 from app.forms import RegisterationForm
@@ -27,6 +28,7 @@ class User(db.Model, UserMixin):
     gender = db.Column(db.String(10), nullable=False)
     phone =  db.Column(db.String, nullable=False)
     birth_date = db.Column(db.String(50))
+    account = db.relationship('Account', cascade="all, delete", uselist=False, backref='')
     def __init__(self, fullname, username , email, password, gender, phone, birth_date, state=False, role='normal' ):
         self.fullname = fullname
         self.username = username
@@ -42,14 +44,16 @@ class Account(db.Model, UserMixin):
     __tablename__ = 'accounts'
 
     id = db.Column(db.Integer,primary_key=True)
-    account_no = db.Column(db.String(30), nullable = False)
+    account_no = db.Column(db.String(30), unique=True, nullable = False)
     acc_status = db.Column(db.Boolean, nullable=False)
     balance = db.Column(db.Integer, nullable=False, default=0)
     uid = db.Column(db.Integer, db.ForeignKey('users.id'))
-    def __init__(self, account_no, acc_status , balance):
+    owner = db.relationship("User", back_populates="account")
+    def __init__(self, account_no, uid, balance = 0, acc_status = False):
         self.account_no = account_no
         self.balance = balance
         self.acc_status = acc_status
+        self.uid = uid
 
         
 
