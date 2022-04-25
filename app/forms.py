@@ -28,4 +28,8 @@ class ContactForm(FlaskForm):
     subject = StringField(label="Subject", validators=[DataRequired()])
     message = StringField(label="Message", validators=[DataRequired(), Length(max = 200)])
     submit = SubmitField(label='Send Message')
-    
+
+class TransactionForm(FlaskForm):
+    account_no = StringField(label='Account number',render_kw={'placeholder':'Account No.', 'class':'form-control'}, validators=[DataRequired()])
+    amount = StringField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired()])
+    submit = SubmitField(label='Done')

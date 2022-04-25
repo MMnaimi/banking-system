@@ -167,3 +167,12 @@ table.table .avatar {
     border-radius: 5px;
     padding: 3px;
 }
+.trans-btn-back {
+    max-width: none;
+    flex: none;
+}
+.btn-trans{
+    background-color: #2dc997;
+    border-color: #2dc997;
+    color: white;
+}

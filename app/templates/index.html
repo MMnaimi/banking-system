@@ -53,13 +53,13 @@
             <ul>
               <li><a href="withdraw">Withdraw</a></li>
               <li><a href="deposit">Deposit</a></li>
-              <li><a href="transform">Transfer</a></li>
+              <li><a href="transfer">Transfer</a></li>
               
             </ul>
           </li>
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/profile">Profile</a></li>
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/profile"><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
           {% if current_user.role=='admin' %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
           {% endif %}

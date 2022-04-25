@@ -1,0 +1,29 @@
+{% extends 'transaction_layout.html' %}
+
+{% block pagetitle %} Deposit {% endblock %}
+
+{% block trans_title %} Deposit money to your account {% endblock %}
+
+{% block trans_body %}
+
+<form action="" method="post">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="form-outline">
+            {{ form.amount(class="form-control form-control-lg",id="amount") }}
+            {{ form.amount.label(class="form-label", for="amount") }}
+          </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="form-outline">
+              {{ form.submit(class="btn btn-trans", value="Deposit") }}
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}

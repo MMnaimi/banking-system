@@ -1,7 +1,8 @@
 import email
+from unicodedata import category
 from flask import Flask, render_template, redirect, request, session, flash
 from app import app, db
-from app.forms import RegisterationForm, LoginForm
+from app.forms import RegisterationForm, LoginForm, TransactionForm
 from app.models import User, Account
 from flask_login import login_user, logout_user, current_user, login_required
 
@@ -30,7 +31,7 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        flash(f'Account created successfully fro {form.username.data}', category='success')
+        flash(f'Account created successfully fro {form.username.data}', category='success',)
         return redirect('/login')
 
 
@@ -49,10 +50,51 @@ def login():
     return render_template("login.html", form=form)
 
 
-@app.route('/withdraw')
+@app.route('/withdraw', methods=['GET', 'POST'])
 @login_required
 def withdraw():
-    return "Withdraw page"
+    form = TransactionForm()
+    if request.method == 'POST':
+        account = Account.query.filter_by(uid = current_user.id).first()
+        if account.balance - 500 > int(form.amount.data):    
+            account.balance -= int(form.amount.data)
+            db.session.commit()
+            flash(f"you have successfully withdrew {form.amount.data}AF from your account")
+        else:
+            flash("You have insufficient balance", category='error')
+    return render_template('withdraw.html', form=form)
+
+
+@app.route('/deposit', methods=['GET', 'POST'])
+def deposit():
+    form = TransactionForm()
+    if request.method == 'POST':
+        account = Account.query.filter_by(uid = current_user.id).first()
+        account.balance += int(form.amount.data)
+        db.session.commit()
+        flash(f"{form.amount.data} AF added to your account", category='success')
+    return render_template('deposit.html', form = form)
+
+@app.route('/transfer', methods=['GET', 'POST'])
+def transfer():
+    form = TransactionForm()
+    if request.method == 'POST':
+        sender  = Account.query.filter_by(uid = current_user.id).first()
+        reciever = Account.query.filter_by(account_no = form.account_no.data).first()
+        if reciever:
+            if sender.balance - 500 > int(form.amount.data):
+                reciever.balance += int(form.amount.data)
+                sender.balance -= int(form.amount.data)
+                db.session.commit()
+                flash("Transfer done successfully", category="success")
+            else:
+                flash("You have insufficient balance", category="error")
+        else:
+            flash("You have entered incorrect account number", category="error")
+
+        
+            
+    return render_template("transfer.html", form=form)
 
 
 @app.route('/logout')
@@ -74,6 +116,12 @@ def profile_settings(uid):
     form.role.data = user.role
     form.state.data = user.state
     return render_template('profile_settings.html', form=form, user=user)
+
+@app.route('/profile/<uid>')
+def profile(uid):
+    user_records = db.session.query(User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
+                                   User.birth_date, Account.account_no, Account.balance).join(User, User.id == Account.uid).filter(User.id == 4).all()
+    return f"user record { user_records}"
 
 
 # Edit user route

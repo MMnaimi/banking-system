@@ -76,9 +76,9 @@
                         <td>{{ user.birth_date }}</td>
                         <td>
                             {% if user.role != 'admin' and user.state == False %}
-                            <a class="state-pending" href="/update-state/{{ user.id }}">Pending</a>
+                            <a class="state-pending" href="/update-state/{{ user.id }}">Active</a>
                             {% elif user.state == True and user.role != 'admin' %}
-                            <a class="state-active" href="/update-state/{{ user.id }}">Active</a>
+                            <a class="state-active" href="/update-state/{{ user.id }}">Pending</a>
                             {% endif %}
                         </td>
                         <td>
