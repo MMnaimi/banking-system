@@ -31,7 +31,7 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        flash(f'Account created successfully fro {form.username.data}', category='success',)
+        flash(f'Account created successfully for {form.username.data}', category='success',)
         return redirect('/login')
 
 
@@ -53,45 +53,56 @@ def login():
 @app.route('/withdraw', methods=['GET', 'POST'])
 @login_required
 def withdraw():
-    form = TransactionForm()
-    if request.method == 'POST':
-        account = Account.query.filter_by(uid = current_user.id).first()
-        if account.balance - 500 > int(form.amount.data):    
-            account.balance -= int(form.amount.data)
-            db.session.commit()
-            flash(f"you have successfully withdrew {form.amount.data}AF from your account")
-        else:
-            flash("You have insufficient balance", category='error')
+    if current_user.is_authenticated and not is_admin(current_user.id) and not is_sys_user(current_user.id):
+        form = TransactionForm()
+        if request.method == 'POST':
+            account = Account.query.filter_by(uid = current_user.id).first()
+            if account.balance - 500 > int(form.amount.data):    
+                account.balance -= int(form.amount.data)
+                db.session.commit()
+                flash(f"you have successfully withdrew {form.amount.data}AF from your account")
+            else:
+                flash("You have insufficient balance", category='error')
+    else:
+        flash(f"You need to log in first", category='error')
+        return "redirect('/login')"
     return render_template('withdraw.html', form=form)
 
 
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
-    form = TransactionForm()
-    if request.method == 'POST':
-        account = Account.query.filter_by(uid = current_user.id).first()
-        account.balance += int(form.amount.data)
-        db.session.commit()
-        flash(f"{form.amount.data} AF added to your account", category='success')
+    if current_user.is_authenticated and not is_admin(current_user.id) and not is_sys_user(current_user.id):
+        form = TransactionForm()
+        if request.method == 'POST':
+            account = Account.query.filter_by(uid = current_user.id).first()
+            account.balance += int(form.amount.data)
+            db.session.commit()
+            flash(f"{form.amount.data} AF added to your account", category='success')
+    else:
+        flash(f"log in to your account first", category='error')
+        return redirect('/login')
     return render_template('deposit.html', form = form)
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer():
-    form = TransactionForm()
-    if request.method == 'POST':
-        sender  = Account.query.filter_by(uid = current_user.id).first()
-        reciever = Account.query.filter_by(account_no = form.account_no.data).first()
-        if reciever:
-            if sender.balance - 500 > int(form.amount.data):
-                reciever.balance += int(form.amount.data)
-                sender.balance -= int(form.amount.data)
-                db.session.commit()
-                flash("Transfer done successfully", category="success")
+    if current_user.is_authenticated and not is_admin(current_user.id) and not is_sys_user(current_user.id):
+        form = TransactionForm()
+        if request.method == 'POST':
+            sender  = Account.query.filter_by(uid = current_user.id).first()
+            reciever = Account.query.filter_by(account_no = form.account_no.data).first()
+            if reciever:
+                if sender.balance - 500 > int(form.amount.data):
+                    reciever.balance += int(form.amount.data)
+                    sender.balance -= int(form.amount.data)
+                    db.session.commit()
+                    flash("Transfer done successfully", category="success")
+                else:
+                    flash("You have insufficient balance", category="error")
             else:
-                flash("You have insufficient balance", category="error")
-        else:
-            flash("You have entered incorrect account number", category="error")
-
+                flash("You have entered incorrect account number", category="error")
+    else:
+        flash(f"log in to your account first", category='error')
+        return redirect('/login')
         
             
     return render_template("transfer.html", form=form)
@@ -116,6 +127,7 @@ def profile_settings(uid):
     form.role.data = user.role
     form.state.data = user.state
     return render_template('profile_settings.html', form=form, user=user)
+    
 
 @app.route('/profile/<uid>')
 def profile(uid):
@@ -137,7 +149,7 @@ def update_user(uid):
         record.phone = form.phone.data
         record.gender = form.gender.data
         record.role = form.role.data
-        record.state = bool(form.state.data)
+        record.state = form.state.data
         db.session.commit()
         if current_user.role == 'admin' or current_user.role == 'sysuser':
             return redirect('/users')
@@ -150,17 +162,23 @@ def update_user(uid):
 def update_state(uid):
     from random import randint
     user = User.query.get(uid)
-    if user.state:
-        user.state = not user.state
+    if user.state == 'active':
+        user.state = 'deactive'
+        account = Account.query.filter_by(uid = user.id).first()
+        account.acc_status = False
+        db.session.commit()
+        return redirect('/users')
+    elif user.state == 'deactive':
+        user.state = 'active'
+        account = Account.query.filter_by(uid = user.id).first()
+        account.acc_status = True
         db.session.commit()
         return redirect('/users')
     else:
-        user.state = not user.state
-        account = Account(account_no=str(user.id)+user.username, acc_status=True, uid=user.id)
+        user.state = 'active'
+        account = Account(account_no=str(user.id)+str(randint(100, 1000))+user.username, acc_status=True, uid=user.id)
         db.session.add(account)
-        if db.session.commit():
-            return "ok"
-        
+        db.session.commit()
         return redirect('/users')
 
 @app.route('/delete/<uid>')
@@ -178,12 +196,12 @@ def user_list():
         
 def is_admin(uid):
     user = User.query.filter_by(id=uid).first()
-    if user.role == 0:
+    if user.role == 'admin':
         return True
     return False
 
 def is_sys_user(uid):
     user = User.query.filter_by(id=uid).first()
-    if user.role == 1:
+    if user.role == 'sysuser':
         return True
     return False

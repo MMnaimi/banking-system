@@ -22,14 +22,14 @@ class User(db.Model, UserMixin):
     fullname = db.Column(db.String(30), nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    state = db.Column(db.Boolean, nullable=False, default=False)
+    state = db.Column(db.String(10), nullable=False, default='pending')
     password = db.Column(db.String(16), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='normal')
     gender = db.Column(db.String(10), nullable=False)
-    phone =  db.Column(db.String, nullable=False)
+    phone =  db.Column(db.String(30), nullable=False)
     birth_date = db.Column(db.String(50))
     account = db.relationship('Account', cascade="all, delete", uselist=False, backref='')
-    def __init__(self, fullname, username , email, password, gender, phone, birth_date, state=False, role='normal' ):
+    def __init__(self, fullname, username , email, password, gender, phone, birth_date, state='pending', role='normal' ):
         self.fullname = fullname
         self.username = username
         self.email = email
