@@ -19,82 +19,84 @@
 </script>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="table-responsive">
-        <div class="table-wrapper">
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <h2>Manage <b>Users</b></h2>
-                    </div>
-                    <div class="col-sm-7">
-                        <a href="/" class="btn btn-secondary"> <span>Back To Home</span></a>						
+<div class="container">
+    <div class="row md-5">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <h2>Manage <b>Users</b></h2>
+                        </div>
+                        <div class="col-sm-7">
+                            <a href="/" class="btn btn-secondary"> <span>Back To Home</span></a>						
+                        </div>
                     </div>
                 </div>
-            </div>
-            <table class="table table-striped table-hover">
-                <thead>
-                    {% if users %}
-                    <tr>
-                        <th>#</th>
-                        <th>Fullname</th>						
-                        <th>Username</th>
-                        <th>Account No.</th>
-                        <th>Gender</th>
-                        <th>Role</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Date of Birth</th>
-                        <th>State</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                    {% for user in users %}
-                    
-                <tbody>
-                    <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.fullname }}</td>
-                        <td>{{ user.username }}</td>
-                        {%if user.role != 'normal' %}
-                        <td>{{ user.account_no }}</td>
-                        {% else %}
-                        <td></td>
-                        {% endif %}
-                        <td>{{ user.gender }}</td>
-                        <td>
-                            {% if user.role == 'admin' %}
-                            Admin
-                            {% elif user.role == 'sysuser' %}
-                            System User
+                <table class="table table-striped table-hover">
+                    <thead>
+                        {% if users %}
+                        <tr>
+                            <th>#</th>
+                            <th>Fullname</th>						
+                            <th>Username</th>
+                            <th>Account No.</th>
+                            <th>Gender</th>
+                            <th>Role</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th colspan="2">Date of Birth</th>
+                            <th>State</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                        {% for user in users %}
+                        
+                    <tbody>
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.fullname }}</td>
+                            <td>{{ user.username }}</td>
+                            {%if user.role != 'normal' %}
+                            <td>{{ user.account_no }}</td>
                             {% else %}
-                            Customer
+                            <td></td>
                             {% endif %}
-                        </td>                        
-                        <td>{{ user.phone }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.birth_date }}</td>
-                        <td>
-                            {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
-                            <a class="state-pending" href="/update-state/{{ user.id }}">Active</a>
-                            {% elif user.state == 'active' and user.role != 'admin' %}
-                            <a class="state-active" href="/update-state/{{ user.id }}">deactive</a>
-                            {% elif user.state == 'pending' and user.role != 'admin' %}
-                            <a class="state-active" href="/update-state/{{ user.id }}">Pending</a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/profile-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
-                            <a href="/delete/{{ user.id }} " class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                   
-                </tbody>
-            </table>
-            {% else %}
-            <span class="success"><h3>No User Register Yet</h3></span>
-            {% endif %}
+                            <td>{{ user.gender }}</td>
+                            <td>
+                                {% if user.role == 'admin' %}
+                                Admin
+                                {% elif user.role == 'sysuser' %}
+                                System User
+                                {% else %}
+                                Customer
+                                {% endif %}
+                            </td>                        
+                            <td>{{ user.phone }}</td>
+                            <td>{{ user.email }}</td>
+                            <td colspan="2">{{ user.birth_date }}</td>
+                            <td>
+                                {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
+                                <a class="state-pending" href="/update-state/{{ user.id }}">Active</a>
+                                {% elif user.state == 'active' and user.role != 'admin' %}
+                                <a class="state-active" href="/update-state/{{ user.id }}">deactive</a>
+                                {% elif user.state == 'pending' and user.role != 'admin' %}
+                                <a class="state-active" href="/update-state/{{ user.id }}">Pending</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/profile-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
+                                <a href="/delete/{{ user.id }} " class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                       
+                    </tbody>
+                </table>
+                {% else %}
+                <span class="success"><h3>No User Register Yet</h3></span>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>     

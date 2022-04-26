@@ -176,3 +176,7 @@ table.table .avatar {
     border-color: #2dc997;
     color: white;
 }
+.table-responsive{
+    width: 1200px;
+    overflow-x: none;
+}

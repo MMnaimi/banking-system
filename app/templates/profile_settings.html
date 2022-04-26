@@ -49,14 +49,9 @@
                                     {{ form.gender.label(class="labels") }}:
                                     {% for option in form.gender %}
                                     <div class="form-check form-check-inline">
-                                        {{option.label}}{{ option }}
+                                        {{ option }} {{option.label}}
                                     </div>
                                     {% endfor %}
-
-                                </div>
-                                <div class="col-md-12 mt-3">
-                                    {{ form.password.label(class="labels") }}
-                                    {{ form.password(class="form-control") }}
 
                                 </div>
                                 <div class="col-md-12 mt-3">
@@ -64,17 +59,12 @@
                                     {{ form.birth_date(class="form-control") }}
 
                                 </div>
+                                {% if current_user.role in ['admin', 'sysuser'] %}
                                 <div class="col-md-12 mt-3">
                                     {{ form.role.label(class="labels") }}
                                     {{ form.role(class="form-control") }}
 
                                 </div>
-                                {% if current_user.role == "admin" or current_usre.role == "sysuser" %}
-                                    <div class="colo-md-12 mt-3">
-                                            {{ form.state.label(class="labels") }}
-                                            {{ form.state(class="form-control") }}
-                                        
-                                    </div>
                                 {% endif %}
                                 
                             </div>

@@ -59,7 +59,7 @@
           </li>
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/profile"><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/profile/{{ current_user.id }}"><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
           {% if current_user.role=='admin' %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
           {% endif %}

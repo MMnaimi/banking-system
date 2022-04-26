@@ -42,4 +42,15 @@
 .gender {
     margin-top: 25px;
 }
-
+.edit-profile {
+    padding: 8px 21px;
+    border: 1px solid #2dc997;
+    color: #2dc997;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.edit-profile:hover {
+    padding: 10px 23px;
+    color: white;
+    background-color: #2dc997;
+}

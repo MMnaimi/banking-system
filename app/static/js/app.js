@@ -8,3 +8,7 @@ document.querySelector("#signup-item").addEventListener('click', function(){
     signin.style.display = "none"
     signup.style.display = "block"
 })
+
+document.querySelector("body").addEventListener('click', function(){
+    document.querySelector(".message_area").style.display = 'none'
+})
