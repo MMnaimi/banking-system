@@ -9,19 +9,21 @@
 <form action="" method="post">
     <div class="row">
         <div class="col-md-6 mb-4">
-          <div class="form-outline">
-            {{ form.amount(class="form-control form-control-lg",id="amount") }}
+          <div class="form-outline mb-2">
             {{ form.amount.label(class="form-label", for="amount") }}
+            {{ form.amount(class="form-control form-control-lg",id="amount") }}
           </div>
 
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 mb-4">
-          <div class="form-outline">
-            {{ form.account_no(class="form-control form-control-lg",id="amount") }}
+          <div class="form-outline mb-2">
             {{ form.account_no.label(class="form-label", for="amount") }}
+            {{ form.account_no(class="form-control form-control-lg",id="amount") }}
           </div>
+
+          <div class="form-outline">
+            {{ form.password.label(class="form-label", for="password") }}
+            {{ form.password(class="form-control form-control-lg",id="password") }}
+          </div>
+
 
         </div>
     </div>

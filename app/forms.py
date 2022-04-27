@@ -1,6 +1,6 @@
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 
 class RegisterationForm(FlaskForm):
@@ -31,5 +31,6 @@ class ContactForm(FlaskForm):
 
 class TransactionForm(FlaskForm):
     account_no = StringField(label='Account number',render_kw={'placeholder':'Account No.', 'class':'form-control'}, validators=[DataRequired()])
-    amount = StringField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired()])
+    amount = IntegerField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired()])
+    password = PasswordField(label='Password', render_kw={'placeholder':'Password...', 'class':'form-control'}, validators=[DataRequired()])
     submit = SubmitField(label='Done')

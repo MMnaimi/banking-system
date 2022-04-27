@@ -49,6 +49,7 @@
           <li><a class="nav-link scrollto" href="#about">About</a></li>
           <li><a class="nav-link scrollto" href="#services">Services</a></li>
           <li><a class="nav-link scrollto" href="#team">Team</a></li>
+          {% if current_user.role == 'normal' %}
           <li class="dropdown"><a href="#"><span>Features</span> <i class="bi bi-chevron-down"></i></a>
             <ul>
               <li><a href="withdraw">Withdraw</a></li>
@@ -57,10 +58,11 @@
               
             </ul>
           </li>
+          {% endif %}
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/profile/{{ current_user.id }}"><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
-          {% if current_user.role=='admin' %}
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
+          {% if current_user.role=='admin'or current_user.role == 'sysuser' %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
           {% endif %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/logout">log out</a></li>

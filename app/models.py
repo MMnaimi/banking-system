@@ -12,7 +12,7 @@ def load_user(user_id):
 @login_manager.unauthorized_handler
 def unauthorized():
     form = RegisterationForm()
-    return render_template('register.html',form=form, message = "Unauthorized Accesss, Please Register first")
+    return render_template('404.html',form=form, message = "Unauthorized Accesss, Please Register first")
 
 
 class User(db.Model, UserMixin):
