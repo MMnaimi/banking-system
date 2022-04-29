@@ -45,7 +45,6 @@
                             <th>Role</th>
                             <th>Phone</th>
                             <th>Email</th>
-                            <th colspan="2">Date of Birth</th>
                             <th>State</th>
                             <th>Actions</th>
                         </tr>
@@ -57,8 +56,10 @@
                             <td>{{ user.id }}</td>
                             <td>{{ user.fullname }}</td>
                             <td>{{ user.username }}</td>
-                            {%if user.role != 'normal' %}
+                            {%if user.role == 'normal' %}
                             <td>{{ user.account_no }}</td>
+                            {% elif user.role == 'admin' %}
+                            <td style="color: #2dc997;font-weight: bold;text-align: center;">&#9812;</td>
                             {% else %}
                             <td></td>
                             {% endif %}
@@ -74,20 +75,21 @@
                             </td>                        
                             <td>{{ user.phone }}</td>
                             <td>{{ user.email }}</td>
-                            <td colspan="2">{{ user.birth_date }}</td>
-                            <td>
+                            <td style="text-align: center;">
                                 {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
-                                <a class="state-pending" href="/update-state/{{ user.id }}">Active</a>
+                                <a class="state-active" href="/update-state/{{ user.id }}">Active</a>
                                 {% elif user.state == 'active' and user.role != 'admin' %}
-                                <a class="state-active" href="/update-state/{{ user.id }}">deactive</a>
+                                <a class="state-pending" href="/update-state/{{ user.id }}">deactive</a>
                                 {% elif user.state == 'pending' and user.role != 'admin' %}
-                                <a class="state-active" href="/update-state/{{ user.id }}">Pending</a>
+                                <a class="state-pending" href="/update-state/{{ user.id }}">Pending</a>
                                 {% endif %}
                             </td>
+                            {% if user.role != 'admin' %}
                             <td>
-                                <a href="/profile-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
+                                <a href="/admin/user-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
                                 <a href="/delete/{{ user.id }} " class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
                             </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                        

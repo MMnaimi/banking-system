@@ -7,6 +7,23 @@ from datetime import datetime
 
 
 
+def is_admin(uid):
+    user = User.query.filter_by(id=uid).first()
+    if user.role == 'admin':
+        return True
+    return False
+
+def is_sys_user(uid):
+    user = User.query.filter_by(id=uid).first()
+    if user.role == 'sysuser':
+        return True
+    return False
+
+def transaction_auth():
+    pass
+
+
+
 @app.route("/")
 def homepage():
     return render_template("index.html")
@@ -17,10 +34,9 @@ def homepage():
 def register():
     if current_user.is_authenticated:
         return redirect("/")
+
     form = RegisterationForm()
-    if request.method == "GET":
-        return render_template("register.html", form = form)
-    else:
+    if request.method == "POST":
         form.validate()
         user = User(fullname=form.fullname.data, username=form.username.data,
                             email=form.email.data, password=form.password.data, 
@@ -32,111 +48,123 @@ def register():
         flash(f'Account created successfully for {form.username.data}', category='success',)
         return redirect('/login')
 
+    return render_template("register.html", form = form)
+
 
 # Login page route
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect('/')
+
     form = LoginForm()
     args = request.args.to_dict(flat=False)
     default_route = '/'
     if request.method == "POST":
         user = User.query.filter_by(email=form.email.data).first()
-        if user and form.password.data == user.password:
-            if user.state == 'active':
-                login_user(user)
-                if args.get('redirect', ''):
-                    default_route = args.get('redirect')[0]
-                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", default_route, args)
-                return redirect(default_route)
-            else:
-                flash('Please wait, Your account is not currently active')
-        else:
+        if not user and form.password.data != user.password:
             flash('Incorrect email or password')
-            
+            return redirect('/login')
+
+        if user.state != 'active':
+            flash('Please wait, Your account is not currently active')
+            return redirect('/login')
+
+        login_user(user)
+        if args.get('redirect', ''):
+            default_route = args.get('redirect')[0]
+        return redirect(default_route)
+       
     return render_template("login.html", form=form)
 
 
 @app.route('/withdraw', methods=['GET', 'POST'])
 def withdraw():
-    if current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id)):
-        form = TransactionForm()
-        if request.method == 'POST':
-            account = Account.query.filter_by(uid = current_user.id).first()
-            if current_user.password == form.password.data:
-                if account.balance - 500 > int(form.amount.data):    
-                    account.balance -= int(abs(form.amount.data))
-                    db.session.commit()
-                    flash(f"you have successfully withdrew {form.amount.data}AF from your account")
-                    return redirect ('/')
-                else:
-                    flash("You have insufficient balance", category='error')
-            else:
-                flash(
-                    f"You have entered Incorrect password for user {current_user}, Please try agian!"
-                )
-    else:
+    if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
         flash(f"You need to log in first", category='error')
         return redirect('/login')
-    return render_template('withdraw.html', form=form)
+
+    account = Account.query.filter_by(uid = current_user.id).first()
+    form = TransactionForm()
+    amount = form.amount.data
+    if request.method == 'POST':
+
+        if current_user.password != form.password.data:
+            flash(f"You have entered Incorrect password for user {current_user.username}, Please try agian!")
+            return redirect('/withdraw')
+
+        if account.balance - 500 <= amount: 
+            flash("You have insufficient balance", category='error')
+            return redirect('/withdraw')
+
+        account.balance -= abs(amount)
+        db.session.commit()
+        flash(f"you have successfully withdrew {form.amount.data}AF from your account")
+        return redirect ('/withdraw')
+
+    return render_template('withdraw.html', form=form,balance=account.balance)
 
 
 
 @app.route('/deposit', methods=['GET', 'POST'])
 def deposit():
-    if current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id)):
-        form = TransactionForm()
-        if request.method == 'POST':
-            account = Account.query.filter_by(uid = current_user.id).first()
-            if current_user.password == form.password.data:
-                account.balance += int(abs(form.amount.data))
-                db.session.commit()
-                flash(f"{form.amount.data} AF added to your account", category='success')
-            else:
-                flash(
-                    f'You have entered incorrect password for user {current_user.fullname}, Please try again!'
-                )
-    else:
+    if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
         flash(f"log in to your account first", category='error')
         return redirect('/login?redirect=/deposit')
-    return render_template('deposit.html', form = form)
+
+    account = Account.query.filter_by(uid = current_user.id).first()
+    form = TransactionForm()
+    amount = form.amount.data
+    if request.method == 'POST':
+
+        if current_user.password != form.password.data:
+            flash(f'You have entered incorrect password for user {current_user.fullname}, Please try again!')
+            return redirect('/deposit')
+
+        account.balance += abs(amount)
+        db.session.commit()
+        flash(f"{form.amount.data} AF added to your account", category='success')
+
+    return render_template('deposit.html', form = form, balance=account.balance)
 
 
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer():
-    if current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id)):
-        form = TransactionForm()
-        if request.method == 'POST':
-            sender  = Account.query.filter_by(uid = current_user.id).first()
-            reciever = Account.query.filter_by(account_no = form.account_no.data).first()
-            if current_user.password == form.password.data:
-                if reciever:
-                    if sender.balance - 500 > int(form.amount.data):
-                        reciever.balance += int(form.amount.data)
-                        sender.balance -= int(form.amount.data)
-                        db.session.commit()
-                        flash("Transfer done successfully", category="success")
-                        return redirect('/')
-                    else:
-                        flash("You have insufficient balance", category="error")
-                else:
-                    flash("You have entered incorrect account number", category="error")
-            else:
-                flash(
-                    f"You have entered incorrect password for user {current_user.fullname}, Please try again!"
-                )
-    else:
+
+    if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
         flash(f"log in to your account first", category='error')
         return redirect('/login')
+
+    default_redirect = '/transfer'
+    sender  = Account.query.filter_by(uid = current_user.id).first()
+    form = TransactionForm()
+    amount = form.amount.data
+    if request.method == 'POST':
+        reciever = Account.query.filter_by(account_no = form.account_no.data).first()
         
-            
-    return render_template("transfer.html", form=form)
+        if current_user.password != form.password.data:
+            flash(f"You have entered incorrect password for user {current_user.fullname}, Please try again!")
+            return redirect(default_redirect)
+
+        if not reciever or reciever.uid == sender.uid:   
+            flash("You have entered incorrect account number", category="error")
+            return redirect(default_redirect)
+
+        if sender.balance - 500 <= amount:
+            flash("You have insufficient balance", category="error")
+            return redirect(default_redirect)
+
+        reciever.balance += amount
+        sender.balance -= amount
+        db.session.commit()
+        flash("Transfer done successfully", category="success")
+        return redirect(default_redirect)                 
+    return render_template("transfer.html", form=form, balance=sender.balance)
 
 
 
-@app.route('/logout')
+@app.route('/logout',methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
@@ -144,8 +172,9 @@ def logout():
 
 
 
-# profile settings
+# user profile settings
 @app.route('/user/profile-settings', methods=['GET', 'POST'])
+@login_required
 def profile_settings():
     form = RegisterationForm()
     user = User.query.filter_by(id=current_user.id).first()
@@ -155,27 +184,48 @@ def profile_settings():
     form.phone.data = user.phone
     form.gender.data = user.gender
     form.birth_date.data = datetime.strptime(user.birth_date, '%Y-%m-%d')
-    print(type(user.birth_date))
     return render_template('user_profile_settings.html', form=form, user=user)
+
+# admin profile settings
+@app.route('/admin/user-settings/<uid>', methods=['GET', 'POST'])
+@login_required
+def admin_users_settings(uid):
+    user = User.query.get(uid)
+    if current_user.role != 'admin' or current_user.role != 'sysuser':
+        return  render_template('404.html')
+
+    form = RegisterationForm()
+    form.fullname.data = user.fullname
+    form.username.data = user.username
+    form.email.data = user.email
+    form.phone.data = user.phone
+    form.gender.data = user.gender
+    form.birth_date.data = datetime.strptime(user.birth_date, '%Y-%m-%d')
+    form.role.data   = user.role
+    form.uid.data = uid
+    return render_template('admin_users_settings.html', form=form, user=user)
+
     
 
 
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 def profile():
-    if current_user.is_authenticated:
-        user_record = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
-                                    User.birth_date, Account.account_no, Account.balance).join(Account, User.id == Account.uid, isouter=True).filter(User.id == current_user.id).first()
-        print(current_user.id)
-        return render_template('profile.html', user = user_record)
-    else:
+    if not current_user.is_authenticated:
         return render_template('404.html')
+
+    user_record = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
+                                User.birth_date, Account.account_no, Account.balance).join(Account, User.id == Account.uid, isouter=True).filter(User.id == current_user.id).first()
+    return render_template('profile.html', user = user_record)
+
+        
 
 
 
 
 # Edit user route
 @app.route('/user/update-profile', methods=['GET', 'POST'])
+@login_required
 def update_user():
     record = User.query.filter_by(id=current_user.id).first()
     if record.role !='admin':
@@ -189,35 +239,39 @@ def update_user():
             record.birth_date = form.birth_date.data
             db.session.commit()
             return redirect('/user/profile')
+
     return render_template('index.html')
 
 
-# Edit user route
-# @app.route('/admin/user-update/<uid>', methods=['GET', 'POST'])
-# def update_user(uid):
-#     record = User.query.filter_by(id=uid).first()
-#     if record.role !='admin':
-#         if request.method == 'POST':
-#             form = RegisterationForm()
-#             record.fullname = form.fullname.data
-#             record.username = form.username.data
-#             record.email = form.email.data
-#             record.password = record.password
-#             record.phone = form.phone.data
-#             record.gender = form.gender.data
-#             if current_user.role == 'admin':
-#                 record.role = form.role.data
-#             else:
-#                 record.roel = record.role
-#             # record.state = record.state
-#             db.session.commit()
-#             if current_user.role == 'admin' or current_user.role == 'sysuser':
-#                 return redirect('/users')
-#             else:
-#                 return redirect('profile')
-#     else:
-#         flash("Only admin can change admin settings")
-#     return render_template('index.html')
+# Admin edit user route
+@app.route('/admin/update-user/', methods=['GET', 'POST'])
+@login_required
+def admin_user_update():
+    if current_user.role not in ('admin', 'sysuser'):
+        return redirect('/')
+        
+    form = RegisterationForm()
+    record = User.query.filter_by(id=form.uid.data).first()
+
+    if record.role =='admin':
+        flash("Only admin can change admin settings")
+        return redirect('/users')
+
+    if request.method == 'POST':
+        record.fullname = form.fullname.data
+        record.username = form.username.data
+        record.email = form.email.data
+        record.password = record.password
+        record.phone = form.phone.data
+        record.gender = form.gender.data
+        if current_user.role == 'admin':
+            record.role = form.role.data
+        else:
+            record.roel = record.role
+        db.session.commit()
+        return redirect('/users')
+        
+    return render_template('index.html')
 
 
 
@@ -270,7 +324,9 @@ def delete_user(uid):
 @app.route('/users', methods=['GET', 'POST'])
 def user_list():
     if current_user.role == 'admin' or current_user.role == 'sysuser':
-        users = User.query.all()
+        users = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
+                                    User.birth_date, User.state, User.role, Account.account_no, Account.balance).join(Account, User.id == Account.uid, isouter=True).all()
+
         return render_template('users_list.html',users=users)
     else:
         return render_template('404.html')
@@ -279,14 +335,3 @@ def user_list():
 
 
         
-def is_admin(uid):
-    user = User.query.filter_by(id=uid).first()
-    if user.role == 'admin':
-        return True
-    return False
-
-def is_sys_user(uid):
-    user = User.query.filter_by(id=uid).first()
-    if user.role == 'sysuser':
-        return True
-    return False

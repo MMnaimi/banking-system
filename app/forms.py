@@ -1,6 +1,6 @@
 from wsgiref.validate import validator
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, IntegerField, HiddenField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 
 class RegisterationForm(FlaskForm):
@@ -15,6 +15,7 @@ class RegisterationForm(FlaskForm):
     state = SelectField(label="State",choices=((True,'Active'), (False,'Pending')) ,validators=[DataRequired()])
     confirm_password = PasswordField(label='Confirm Password', validators=[DataRequired()])
     role = SelectField(label="Role", choices=(('sysuser','System User'), ('normal','Normal User')), validators=[DataRequired()])
+    uid = HiddenField()
     submit = SubmitField(label='Sign up')
 
 class LoginForm(FlaskForm):
