@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, request, flash
+from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
-from app.forms import RegisterationForm, LoginForm, TransactionForm
+from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm
 from app.models import User, Account
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
@@ -33,7 +33,7 @@ def homepage():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect("/")
+        return redirect(url_for('homepage'))
 
     form = RegisterationForm()
     if request.method == "POST":
@@ -46,7 +46,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(f'Account created successfully for {form.username.data}', category='success',)
-        return redirect('/login')
+        return redirect(url_for('login'))
 
     return render_template("register.html", form = form)
 
@@ -55,7 +55,7 @@ def register():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect('/')
+        return redirect(url_for('homepage'))
 
     form = LoginForm()
     args = request.args.to_dict(flat=False)
@@ -64,11 +64,11 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if not user and form.password.data != user.password:
             flash('Incorrect email or password')
-            return redirect('/login')
+            return redirect(url_for('login'))
 
         if user.state != 'active':
             flash('Please wait, Your account is not currently active')
-            return redirect('/login')
+            return redirect(url_for('login'))
 
         login_user(user)
         if args.get('redirect', ''):
@@ -91,16 +91,16 @@ def withdraw():
 
         if current_user.password != form.password.data:
             flash(f"You have entered Incorrect password for user {current_user.username}, Please try agian!")
-            return redirect('/withdraw')
+            return redirect(url_for('withdraw'))
 
         if account.balance - 500 <= amount: 
             flash("You have insufficient balance", category='error')
-            return redirect('/withdraw')
+            return redirect(url_for('withdraw'))
 
         account.balance -= abs(amount)
         db.session.commit()
         flash(f"you have successfully withdrew {form.amount.data}AF from your account")
-        return redirect ('/withdraw')
+        return redirect(url_for('withdraw'))
 
     return render_template('withdraw.html', form=form,balance=account.balance)
 
@@ -119,7 +119,7 @@ def deposit():
 
         if current_user.password != form.password.data:
             flash(f'You have entered incorrect password for user {current_user.fullname}, Please try again!')
-            return redirect('/deposit')
+            return redirect(url_for('deposit'))
 
         account.balance += abs(amount)
         db.session.commit()
@@ -134,9 +134,9 @@ def transfer():
 
     if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
         flash(f"log in to your account first", category='error')
-        return redirect('/login')
+        return redirect(url_for('login'))
 
-    default_redirect = '/transfer'
+    default_redirect = 'transfer'
     sender  = Account.query.filter_by(uid = current_user.id).first()
     form = TransactionForm()
     amount = form.amount.data
@@ -145,15 +145,15 @@ def transfer():
         
         if current_user.password != form.password.data:
             flash(f"You have entered incorrect password for user {current_user.fullname}, Please try again!")
-            return redirect(default_redirect)
+            return redirect(url_for(default_redirect))
 
-        if not reciever or reciever.uid == sender.uid:   
-            flash("You have entered incorrect account number", category="error")
-            return redirect(default_redirect)
+        if not reciever or reciever.uid == sender.uid or not reciever.acc_status:   
+            flash("The account number you have entered is wrong or not activated yet", category="error")
+            return redirect(url_for(default_redirect))
 
         if sender.balance - 500 <= amount:
             flash("You have insufficient balance", category="error")
-            return redirect(default_redirect)
+            return redirect(url_for(default_redirect))
 
         reciever.balance += amount
         sender.balance -= amount
@@ -168,7 +168,7 @@ def transfer():
 @login_required
 def logout():
     logout_user()
-    return redirect('/')
+    return redirect(url_for('homepage'))
 
 
 
@@ -188,10 +188,9 @@ def profile_settings():
 
 # admin profile settings
 @app.route('/admin/user-settings/<uid>', methods=['GET', 'POST'])
-@login_required
 def admin_users_settings(uid):
     user = User.query.get(uid)
-    if current_user.role != 'admin' or current_user.role != 'sysuser':
+    if current_user.role == 'normal':
         return  render_template('404.html')
 
     form = RegisterationForm()
@@ -238,7 +237,7 @@ def update_user():
             record.gender = form.gender.data
             record.birth_date = form.birth_date.data
             db.session.commit()
-            return redirect('/user/profile')
+            return redirect(url_for('profile'))
 
     return render_template('index.html')
 
@@ -247,15 +246,15 @@ def update_user():
 @app.route('/admin/update-user/', methods=['GET', 'POST'])
 @login_required
 def admin_user_update():
-    if current_user.role not in ('admin', 'sysuser'):
-        return redirect('/')
+    if current_user.role == 'normal':
+        return redirect(url_for('homepage'))
         
     form = RegisterationForm()
     record = User.query.filter_by(id=form.uid.data).first()
 
     if record.role =='admin':
         flash("Only admin can change admin settings")
-        return redirect('/users')
+        return redirect(url_for('user_list'))
 
     if request.method == 'POST':
         record.fullname = form.fullname.data
@@ -269,7 +268,7 @@ def admin_user_update():
         else:
             record.roel = record.role
         db.session.commit()
-        return redirect('/users')
+        return redirect(url_for('user_list'))
         
     return render_template('index.html')
 
@@ -281,24 +280,27 @@ def update_state(uid):
     if current_user.is_authenticated and (is_admin(current_user.id) or is_sys_user(current_user.id)):
         from random import randint
         user = User.query.get(uid)
+        if user.id == current_user.id:
+            flash("Yun can't change your state", category="error")
+            return redirect(url_for('user_list'))
         if user.state == 'active':
             user.state = 'deactive'
             account = Account.query.filter_by(uid = user.id).first()
             account.acc_status = False
             db.session.commit()
-            return redirect('/users')
+            return redirect(url_for('user_list'))
         elif user.state == 'deactive':
             user.state = 'active'
             account = Account.query.filter_by(uid = user.id).first()
             account.acc_status = True
             db.session.commit()
-            return redirect('/users')
-        else:
-            user.state = 'active'
-            account = Account(account_no=str(user.id)+str(randint(100, 1000))+user.username, acc_status=True, uid=user.id)
-            db.session.add(account)
-            db.session.commit()
-            return redirect('/users')
+            return redirect(url_for('user_list'))
+
+        user.state = 'active'
+        account = Account(account_no=str(user.id)+str(randint(100, 1000))+user.username, acc_status=True, uid=user.id)
+        db.session.add(account)
+        db.session.commit()
+        return redirect(url_for('user_list'))
     else:
         flash("Authorization denied", category='error')
         return render_template('404.html'), 404
@@ -309,14 +311,14 @@ def update_state(uid):
 def delete_user(uid):
     if current_user.role == "admin" or current_user.role == 'sysuser':
         user =  User.query.filter_by(id=uid).first()
-        if user.role != 'admin':
-            user.delete()
+        if user.role != 'admin' and current_user.id != user.id:
+            db.session.delete(user)
             db.session.commit()
             flash('User deleted successfully', category='success')
-            return redirect('/users')
+            return redirect(url_for('user_list'))
         else:
-            flash("Admin can not be deleted")
-            return redirect('/users')
+            flash("You can't delete this account", category="error")
+            return redirect(url_for('user_list'))
 
 
 
@@ -330,6 +332,13 @@ def user_list():
         return render_template('users_list.html',users=users)
     else:
         return render_template('404.html')
+
+@app.route('/pwdresetreq', methods=['GET', 'POST'])
+def reset_password():
+    form = PasswordResetForm()
+    if request.method == 'POST':
+        pass
+    return render_template('reset_pass.html', form= form)
         
         
 

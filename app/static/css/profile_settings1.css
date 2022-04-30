@@ -11,7 +11,8 @@
 }
 
 .profile-button:hover {
-    background: #2dc997
+    background: #2dc997;
+    color: white;
 }
 
 .profile-button:focus {

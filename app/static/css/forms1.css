@@ -43,3 +43,12 @@ CSS
   text-decoration: none;
   margin-left: 5px;
 }
+#reset a {
+  text-decoration: none;
+  font-size: 12px;
+  color: rgb(105, 168, 140);
+}
+#reset a:hover {
+  font-size: 13px;
+  color: #2dc997;
+}
