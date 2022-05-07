@@ -180,3 +180,7 @@ table.table .avatar {
     width: 1200px;
     overflow-x: none;
 }
+
+#info {
+    font-size: 14px;
+}

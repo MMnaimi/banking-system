@@ -1,4 +1,3 @@
-from enum import unique
 from flask import render_template
 from app import db,login_manager
 from app.forms import RegisterationForm
@@ -7,15 +6,36 @@ from flask import render_template
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+        This callback is used to reload the user object from the user ID stored in the session.
+    """
     return User.query.get(user_id)
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    """
+        This function is used for unauthorized users.
+    """
+
     form = RegisterationForm()
     return render_template('404.html',form=form, message = "Unauthorized Accesss, Please Register first")
 
-
 class User(db.Model, UserMixin):
+    """This Class represent the users table in the database.
+    
+    Attributes:
+    -----------
+    id -> int, primary key
+    fullname -> str, not null
+    username -> str, unique, not null
+    email -> str, not null
+    state -> str, not null
+    password -> str, not null
+    role -> str, not null
+    gender -> str, not null
+    phone -> str, not null
+    birth_date -> str, not null
+    """
     __tablename__ = 'users'
 
     id = db.Column(db.Integer,primary_key=True)
@@ -23,7 +43,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     state = db.Column(db.String(10), nullable=False, default='pending')
-    password = db.Column(db.String(16), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='normal')
     gender = db.Column(db.String(10), nullable=False)
     phone =  db.Column(db.String(30), nullable=False)
@@ -40,7 +60,19 @@ class User(db.Model, UserMixin):
         self.phone = phone
         self.birth_date = birth_date
 
+
 class Account(db.Model, UserMixin):
+    """This Class represent the accounts table in the database.
+    
+    Attributes:
+    -----------
+    id -> int, primary key
+    account_no -> str, unique, not null
+    acc_status -> Boolean, not null
+    balance -> int, not null, default is 0
+    uid -> int, foreign key with user id
+    """
+
     __tablename__ = 'accounts'
 
     id = db.Column(db.Integer,primary_key=True)
@@ -56,12 +88,43 @@ class Account(db.Model, UserMixin):
         self.uid = uid
 
         
-
 class Transaction(db.Model):
+    """This Class represent the transaction table in the database.
+    
+    Attributes:
+    -----------
+    id -> int, primary key
+    balance -> int, not null
+    receiver_acc -> str, not null, receiver account No.
+    tran_type -> str, not null
+    tran_date -> str, not null
+    uid -> int, foreigtn key of users table 
+    """
     __tablename__ = 'transactions'
     
     id = db.Column(db.Integer, primary_key = True)
+    balance = db.Column(db.Integer, nullable = False)
+    receiver_ac = db.Column(db.String(30))
+    account_no = db.Column(db.String(30), nullable = False)
     tran_type = db.Column(db.String(30), nullable = False)
     tran_date = db.Column(db.String(30), nullable = False)
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
+    uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+
+
+class Message(db.Model):
+    """This Class represent the messages table in the database.
+    
+    Attributes:
+    -----------
+    id -> int, primary key
+    name -> str, not null
+    email -> str, not null
+    message -> str, not null
+    """
+    __tablename__ = 'messages'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(30), nullable = False)
+    email = db.Column(db.String(30), nullable = False)
+    message = db.Column(db.String(255), nullable = False)
 

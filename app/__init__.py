@@ -12,3 +12,4 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 from app import users
+from app import system_user

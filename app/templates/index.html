@@ -30,6 +30,23 @@
 </head>
 
 <body>
+  <div class="message_area">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'error' %}
+                    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-success alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top d-flex align-items-center header-transparent">
@@ -316,7 +333,7 @@
 
           <div class="col-lg-5 col-md-8">
             <div class="form">
-              <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+              <form action="message" method="post" role="form" class="php-email-form">
                 <div class="form-group">
                   <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
                 </div>

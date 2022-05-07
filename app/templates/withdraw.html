@@ -19,11 +19,19 @@
             {{ form.password(class="form-control form-control-lg",id="password") }}
           </div>
         </div>
-        <div class="col-md-3 mt-4 text-center">
-          <div class="">
+
+        <div class="col-md-3 mt-4" id="info">
+          <div>
+            <strong>Name: </strong>
+            <span style="color:#2dc997; font-weight:1000;">{{ current_user.fullname.upper() }}</span>
+          </div>
+          <div class="mt-1">
+            <strong>Account No: </strong>
+            <span style="color:#2dc997; font-weight:1000;">{{ account.account_no }}</span>
+          </div>
+          <div class="mt-1">
             <strong>Current balance:</strong>
-            <b style="color:#2dc997; font-weight:1000;">{{ balance }}Af</b>
-            
+            <span style="color:#2dc997; font-weight:1000;">{{ account.balance }}Afs</span>
           </div>
         </div>
         

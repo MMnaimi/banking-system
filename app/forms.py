@@ -1,5 +1,3 @@
-from cProfile import label
-from wsgiref.validate import validator
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, IntegerField, HiddenField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
@@ -23,13 +21,6 @@ class LoginForm(FlaskForm):
     email = StringField(label='Email', validators=[DataRequired(), Email()])
     password = PasswordField(label='Passsword', validators=[DataRequired()])
     submit = SubmitField(label='Log in')
-
-class ContactForm(FlaskForm):
-    name = StringField(label='name', validators=[DataRequired()])
-    email = StringField(label='Email', validators=[DataRequired(), Email()])
-    subject = StringField(label="Subject", validators=[DataRequired()])
-    message = StringField(label="Message", validators=[DataRequired(), Length(max = 200)])
-    submit = SubmitField(label='Send Message')
 
 class TransactionForm(FlaskForm):
     account_no = StringField(label='Account number',render_kw={'placeholder':'Account No.', 'class':'form-control'}, validators=[DataRequired()])
