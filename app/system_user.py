@@ -151,7 +151,6 @@ def delete_user(uid):
             flash("You can't delete this account", category="error")
             return redirect(url_for('user_list'))
 
-
 @app.route('/users', methods=['GET', 'POST'])
 def user_list():
     """

@@ -8,25 +8,58 @@ from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 
 def for_normal_users(f):
+    """
+        This function decorate transaction route functions to varify that the user is logged in, user is not a system user or an admin.
+    """
     @wraps(f)
     def wrap(*args, **kwargs):
         if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
-            flash(f"log in to your account first", category='error')
-            return redirect(url_for('login'))
+            return render_template('404.html')
         return f(*args, **kwargs)
     return wrap
 
 def check_password(password):
+    """
+        This function check correctness of password against password stored in db.
+
+        Return -> boolean
+
+        parameter
+        ---------
+        password -> password entered by users
+    """
     if not check_password_hash(current_user.password, password):
         return False
     return True
     
 def balance_validaty(sender, amount):
+    """
+        This function validate sufficiency of the account for transactions.
+
+        Return: Boolean
+
+        parameter
+        ---------
+        sender -> who does the transaction
+        amount -> amount of money use in transaction
+    """
     if sender.balance - 500 <= amount:
         return False
     return True
 
 def log_transaction(**kwrgs):
+    """
+        This function store transactions
+
+        parameter
+        ---------
+        balance -> amount of money 
+        receiver_ac -> if the transactions is transfer we need to store receiver account number
+        tran_type -> type of the transaction possible value -> transfer, withdraw, deposit
+        tran_date -> when the transaction is done
+        uid -> who did the transaction
+        account_no -> user account number who did the transaction 
+    """
     log = Transaction(
         balance = kwrgs.get('amount'), 
         receiver_ac = kwrgs.get('receiver_ac'), 
@@ -75,12 +108,9 @@ def register():
         This function load registeration form and register users.
 
     """
-
-    # redirect users to home page if already authenticated.
     if current_user.is_authenticated:
         return redirect(url_for('homepage'))
 
-    # instantiate Registeration form
     form = RegisterationForm()
     if request.method == "POST":
         form.validate()
@@ -103,11 +133,9 @@ def login():
         user can't login if their state is pending or deactive, this function return a message for them. 
     """
 
-    # Redirect to home page if user is already authenticated.
     if current_user.is_authenticated:
         return redirect(url_for('homepage'))
 
-    # instantiate the login form
     form = LoginForm()
     args = request.args.to_dict(flat=False)
     default_route = '/'
@@ -129,36 +157,32 @@ def login():
     return render_template("login.html", form=form)
 
 @app.route('/withdraw', methods=['GET', 'POST'])
+@for_normal_users
 def withdraw():
     """
         This function load the withdraw page for normal users only.
         withdraw money for normal users
     """
-    # redirect to login if user is not authenticated and currect user is admin or system users
-    if not (current_user.is_authenticated and current_user.state == 'active' and not(is_admin(current_user.id) or is_sys_user(current_user.id))):
-        flash(f"You need to log in first", category='error')
-        return redirect('/login')
-
     account = Account.query.filter_by(uid = current_user.id).first()
     form = TransactionForm()
     amount = form.amount.data
+    error = False
     if request.method == 'POST':
 
-        if not check_password_hash(current_user.password, form.password.data):
+        if not check_password(form.password.data):
             flash(f"You have entered Incorrect password for user {current_user.username}, Please try agian!", category='error')
-            return redirect(url_for('withdraw'))
+            error = True
 
-        if account.balance - 500 <= amount: 
+        if not error and not balance_validaty(account, amount): 
             flash("You have insufficient balance", category='error')
-            return redirect(url_for('withdraw'))
+            error = True
 
-        account.balance -= abs(amount)
-        log = Transaction(balance = amount, tran_type = 'withdraw',  
-                          tran_date = datetime.now(), uid = current_user.id, account_no = account.account_no)
-        db.session.add(log)
-        db.session.commit()
-        flash(f"you have successfully withdrew {form.amount.data}AF from your account")
-        return redirect(url_for('withdraw'))
+        if not error:
+            account.balance -= abs(amount)
+            log_transaction(amount=amount, tran_type='withdraw', account_no=account.account_no)
+            db.session.commit()
+            flash(f"you have successfully withdrew {form.amount.data}AF from your account")
+        
 
     return render_template('withdraw.html', form=form,account=account)
 
@@ -174,14 +198,12 @@ def deposit():
     amount = form.amount.data
     if request.method == 'POST':
 
-        if not check_password_hash(current_user.password, form.password.data):
+        if not check_password(form.password.data):
             flash(f'You have entered incorrect password for user {current_user.fullname}, Please try again!', category='error')
             return redirect(url_for('deposit'))
 
         account.balance += abs(amount)
-        log = Transaction(balance = amount, tran_type = 'deposit',  
-                          tran_date = datetime.now(), uid = current_user.id, account_no = account.account_no)
-        db.session.add(log)
+        log_transaction(amount=amount, tran_type='deposit', account_no=account.account_no)
         db.session.commit()
         flash(f"{form.amount.data} AF added to your account", category='success')
 
@@ -237,7 +259,6 @@ def profile_settings():
     """
         This function load profile settings page.
     """
-    # form instantiation
     form = RegisterationForm()
     user = User.query.filter_by(id=current_user.id).first()
     form.fullname.data = user.fullname
@@ -251,9 +272,8 @@ def profile_settings():
 @app.route('/user/profile', methods=['GET'])
 def profile():
     """
-        This function load user profile page
+        This function load user profile page. 
     """
-    # redirect to 404 page, if user is not authenticated.
     if not current_user.is_authenticated:
         return render_template('404.html')
 
@@ -271,7 +291,6 @@ def update_user():
     if record.role !='admin':
         if request.method == 'POST':
 
-            # form instantiation
             form = RegisterationForm()
             record.fullname = form.fullname.data
             record.username = form.username.data
@@ -293,6 +312,10 @@ def reset_password():
 
 @app.route('/message', methods=['GET', 'POST'])
 def send_message():
+    """
+        This function store contact messages. 
+        any one can send message to system not only registered users.
+    """
     if request.method == 'POST':
         message = Message(name = request.form['name'], email = request.form['email'], message = request.form['message'])
         db.session.add(message)
