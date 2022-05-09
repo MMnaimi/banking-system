@@ -123,6 +123,7 @@ def delete_user(uid):
             return redirect(url_for('user_list'))
 
 @app.route('/users', methods=['GET', 'POST'])
+@login_required
 def user_list():
     """
         This function return list of all users for admin and system users.
@@ -130,10 +131,11 @@ def user_list():
     """
 
     if current_user.role == 'admin' or current_user.role == 'sysuser':
-        users = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
-                                    User.birth_date, User.state, User.role, Account.account_no, Account.balance).join(Account, User.id == Account.uid, isouter=True).all()
+        users = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone,
+                                    User.birth_date, User.state, User.role, Account.account_no,
+                                    Account.balance).join(Account, User.id == Account.uid, isouter=True).all()
 
         return render_template('users_list.html',users=users)
 
     else:
-        return render_template('404.html')
+        return render_template('index.html')

@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
+from importlib_metadata import FileHash
 from app import app, db
-from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
+from app.functions import for_normal_users, check_password, balance_validaty, log_transaction, validate_email, validate_username
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm
 from app.models import User, Account, Message
@@ -26,7 +27,9 @@ def register():
 
     form = RegisterationForm()
     if request.method == "POST":
-        form.validate()
+        if not validate_username(form.username.data) or not validate_email(form.email.data):
+            flash("Username or Email is already taken")
+            return render_template('register.html', form = form)
         user = User(fullname=form.fullname.data, username=form.username.data,
                             email=form.email.data, password=generate_password_hash(form.password.data), 
                             gender=form.gender.data, phone=form.phone.data, 
@@ -55,11 +58,11 @@ def login():
     if request.method == "POST":
         user = User.query.filter_by(email=form.email.data).first()
         if not user or not check_password_hash(user.password, form.password.data):
-            flash('Incorrect email or password')
+            flash('Incorrect email or password', category='error')
             return redirect(url_for('login'))
 
         if user.state != 'active':
-            flash('Please wait, Your account is not currently active')
+            flash('Please wait, Your account is not currently active', category='error')
             return redirect(url_for('login'))
 
         login_user(user)

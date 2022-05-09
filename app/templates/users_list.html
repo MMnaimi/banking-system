@@ -99,7 +99,7 @@
                             {% if user.role != 'admin' %}
                             <td>
                                 <a href="/admin/user-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
-                                <a id="btn-delete" href="/delete/{{ user.id }} " class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
+                                <a id="delete-user" href="#" class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
                             </td>
                             {% endif %}
                         </tr>
@@ -115,5 +115,6 @@
     </div>
 </div>   
 <script src="../static//js/app.js"></script>  
+<script src="../static/js/msg.js"></script>
 </body>
 </html>

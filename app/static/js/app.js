@@ -1,3 +1,4 @@
+console.log('working')
 const signup = document.querySelector('#sign-up-section')
 const signin = document.querySelector('#sign-in-section')
 document.querySelector('#signin-item').addEventListener('click',function(){

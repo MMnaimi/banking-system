@@ -1,4 +1,5 @@
 from functools import wraps
+from xml.dom import ValidationErr
 from flask import Flask, render_template
 from app import db
 from werkzeug.security import  check_password_hash
@@ -93,3 +94,15 @@ def is_sys_user(uid):
     if user.role == 'sysuser':
         return True
     return False
+
+
+
+def validate_username(username):
+    user = User.query.filter_by(username=username).first()
+    if user:
+        raise ValidationErr('That username is taken. Please choose another.')
+
+def validate_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        raise ValidationErr('That email is taken. Please choose another.')

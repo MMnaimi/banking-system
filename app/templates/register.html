@@ -39,7 +39,7 @@
                       {{ form.username(class="form-control form-control-lg",id="lastName") }}
                     </div>
                   </div>
-                  <div class="row">
+                  
                     <div class="col-md-6 mb-4">
                       <div class="form-outline">
                         {{ form.password.label(class="form-label", for="password") }}
@@ -54,9 +54,7 @@
                         {{ form.confirm_password(class="form-control form-control-lg",id="confirmPassword") }}
                       </div>
                     </div>
-                </div>
 
-                <div class="row">
                   <div class="col-md-6 mb-4 d-flex align-items-center">
                     <div class="form-outline datepicker w-100">
                       {{ form.birth_date.label(class="form-label", for="barithdayDate") }}
@@ -67,20 +65,18 @@
                     <h6 class="mb-2 pb-1">Gender: </h6>
                     {% for option in form.gender %}
                     <div class="form-check form-check-inline">
-                      {{option.label}}{{ option }}
+                      {{ option }} {{option.label}}
                     </div>
                     {% endfor %}
                   </div>
-                </div>
 
-                <div class="row">
-                  <div class="col-md-6 mb-4 pb-2">
+                  <div class="col-md-6 mb-4">
                     <div class="form-outline">
                       {{ form.email.label(class="form-label", for="emailAddress") }}
                       {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
                     </div>
                   </div>
-                  <div class="col-md-6 mb-4 pb-2">
+                  <div class="col-md-6 mb-4 pt-2">
                     <div class="form-outline">
                       {{ form.phone.label(class="form-lable", for="phoneNumber") }}
                       {{ form.phone(class="form-control form-control-lg", id="phoneNumber") }}
