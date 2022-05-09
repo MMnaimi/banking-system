@@ -100,6 +100,7 @@ def withdraw():
             log_transaction(amount=amount, tran_type='withdraw', account_no=account.account_no)
             db.session.commit()
             flash(f"you have successfully withdrew {form.amount.data}AF from your account")
+            return redirect(url_for('withdraw'))
         
 
     return render_template('withdraw.html', form=form,account=account)
@@ -124,6 +125,7 @@ def deposit():
         log_transaction(amount=amount, tran_type='deposit', account_no=account.account_no)
         db.session.commit()
         flash(f"{form.amount.data} AF added to your account", category='success')
+        return redirect(url_for('deposit'))
 
     return render_template('deposit.html', form = form, account=account)
 
@@ -159,6 +161,7 @@ def transfer():
             log_transaction(amount=amount, receiver_ac=reciever.account_no, tran_type='transfer', account_no=sender.account_no)
             db.session.commit()
             flash("Transfer done successfully", category="success")
+            return redirect(url_for('transfer'))
 
     return render_template(default_redirect, form=form, account=sender)
 
@@ -207,17 +210,21 @@ def update_user():
     """
     record = User.query.filter_by(id=current_user.id).first()
     if record.role !='admin':
+        form = RegisterationForm()
         if request.method == 'POST':
-
-            form = RegisterationForm()
-            record.fullname = form.fullname.data
-            record.username = form.username.data
-            record.email = form.email.data
-            record.phone = form.phone.data
-            record.gender = form.gender.data
-            record.birth_date = form.birth_date.data
-            db.session.commit()
-            return redirect(url_for('profile'))
+            user = User()
+            check_data = user.custom_validation(form)
+            if check_data.get('state'):
+                record.fullname = form.fullname.data
+                record.username = form.username.data
+                record.email = form.email.data
+                record.phone = form.phone.data
+                record.gender = form.gender.data
+                record.birth_date = form.birth_date.data
+                db.session.commit()
+                return redirect(url_for('profile'))
+            else:
+                flash(f"{check_data.get('message')}", category="error")
 
     return render_template('index.html')
 
@@ -238,6 +245,6 @@ def send_message():
         message = Message(name = request.form['name'], email = request.form['email'], message = request.form['message'])
         db.session.add(message)
         db.session.commit()
-        flash("Message sent...")
-        return redirect(url_for('homepage'))
+        flash("Your message has been sent. Thank you!")
+        return redirect('/#contact')
     return render_template('404.html')

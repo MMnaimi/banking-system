@@ -13,25 +13,8 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/forms1.css') }}">
     <title>{% block title %}Login{% endblock %}</title>
 </head>
+
 <body>
-    <div class="message_area">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category == 'error' %}
-                        <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                        {{ message }}
-                        </div>
-                    {% else %}
-                        <div class="alert alert-success alter-dismissable fade show" role="alert">
-                        {{ message }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-    </div>
-        
     <section class="vh-100 gradient-custom">
         <div class="container py-5 h-100">
             <div class="row justify-content-center align-items-center vh-100">
@@ -39,6 +22,28 @@
                     <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
                         <div class="card-body p-4 p-md-5">
                             <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">login</h3>
+                            <div class="message_area">
+                                {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                {% for category, message in messages %}
+                                {% if category == 'error' %}
+                                <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-success alter-dismissable fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                {% endwith %}
+
+                            </div>
                             <form method="POST">
                                 <div class="row">
                                     <div class="col-md-12 mb-4 pb-2">
@@ -61,7 +66,8 @@
                                     Don't Have an account? <a href="/register" style="font-weight: bold;">Sign up</a>
                                 </div>
                                 <div class="mt-4 pt-2" id="reset">
-                                    <a href="{{ url_for('reset_password') }}" style="font-weight: bold;">Forget password</a>
+                                    <a href="{{ url_for('reset_password') }}" style="font-weight: bold;">Forget
+                                        password</a>
                                 </div>
 
                             </form>

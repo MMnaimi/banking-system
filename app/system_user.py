@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import is_admin, is_sys_user
 from app.forms import RegisterationForm
-from app.models import User, Account
+from app.models import User, Account, Transaction
 from flask_login import current_user, login_required
 from datetime import datetime
 
@@ -57,7 +57,7 @@ def admin_user_update():
         if current_user.role == 'admin':
             record.role = form.role.data
         else:
-            record.roel = record.role
+            record.role = record.role
         db.session.commit()
         return redirect(url_for('user_list'))
         
@@ -139,3 +139,11 @@ def user_list():
 
     else:
         return render_template('index.html')
+
+@app.route('/log', methods=['get', 'POST'])
+@login_required
+def logs():
+    if current_user.role == 'normal':
+        return redirect(url_for('homepage'))
+    logs =  Transaction.query.all()
+    return render_template('logs.html', logs = logs)

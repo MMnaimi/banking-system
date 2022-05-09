@@ -30,25 +30,8 @@
 </head>
 
 <body>
-  
-  <!-- Section message -->
-  <div class="message_area">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% if category == 'error' %}
-                    <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    </div>
-                {% else %}
-                    <div class="alert alert-success alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-</div>
+
+
 
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top d-flex align-items-center header-transparent">
@@ -58,8 +41,6 @@
         <a href="/">
           <div class="icon"><i id="logo-icon" class="bi bi-coin"></i></div>
         </a>
-        <!-- Uncomment below if you prefer to use a text logo -->
-        <!--<h1><a href="index.html">Regna</a></h1>-->
       </div>
 
       <nav id="navbar" class="navbar">
@@ -74,22 +55,24 @@
               <li><a href="withdraw">Withdraw</a></li>
               <li><a href="deposit">Deposit</a></li>
               <li><a href="transfer">Transfer</a></li>
-              
+
             </ul>
           </li>
           {% endif %}
           <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{ current_user.fullname }}</b></a></li>
-          {% if current_user.role=='admin'or current_user.role == 'sysuser' %}
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{
+                current_user.fullname }}</b></a></li>
+          {% if current_user.role == 'admin'or current_user.role == 'sysuser' %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/log">logs</a></li>
           {% endif %}
           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/logout">log out</a></li>
           {% else %}
-           <li><a class="nav-link scrollto sign-item" id="signin-item" href="/login">Sign in</a></li>
+          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/login">Sign in</a></li>
           <li><a class="nav-link scrollto sign-item" id="signup-item" href="/register">Sign up</a></li>
           {% endif %}
-         
+
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -121,19 +104,19 @@
 
             <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
               <div class="icon"><i class="bi bi-wallet"></i></div>
-              <h4 class="title"><a href="">Withdraw</a></h4>
+              <h4 class="title"><a href="/login">Withdraw</a></h4>
               <p class="description">Withdraw funds any time from any part of the glob</p>
             </div>
 
             <div class="icon-box" data-aos="fade-up" data-aos-delay="200">
               <div class="icon"><i class="bi bi-wallet-fill"></i></div>
-              <h4 class="title"><a href="">Deposit</a></h4>
+              <h4 class="title"><a href="/login">Deposit</a></h4>
               <p class="description">Deposit to your account for safekeeping</p>
             </div>
 
             <div class="icon-box" data-aos="fade-up" data-aos-delay="300">
               <div class="icon"><i class="bi bi-send"></i></div>
-              <h4 class="title"><a href="">Transfer</a></h4>
+              <h4 class="title"><a href="/login">Transfer</a></h4>
               <p class="description">Send money from your account fast, free and safer</p>
             </div>
 
@@ -198,22 +181,22 @@
         <div class="row">
           <div class="col-lg-4 col-md-6" data-aos="zoom-in">
             <div class="box">
-              <div class="icon"><a href=""><i class="bi bi-wallet"></i></a></div>
-              <h4 class="title"><a href="">Withdraw</a></h4>
+              <div class="icon"><a href="/login"><i class="bi bi-wallet"></i></a></div>
+              <h4 class="title"><a href="/login">Withdraw</a></h4>
               <p class="description">Withdraw funds any time from any part of the glob</p>
             </div>
           </div>
           <div class="col-lg-4 col-md-6" data-aos="zoom-in">
             <div class="box">
-              <div class="icon"><a href=""><i class="i bi-wallet-fill"></i></a></div>
-              <h4 class="title"><a href="">Deposit</a></h4>
+              <div class="icon"><a href="/login"><i class="i bi-wallet-fill"></i></a></div>
+              <h4 class="title"><a href="/login">Deposit</a></h4>
               <p class="description">Deposit to your account for safekeeping</p>
             </div>
           </div>
           <div class="col-lg-4 col-md-6" data-aos="zoom-in">
             <div class="box">
-              <div class="icon"><a href=""><i class="bi bi-send"></i></a></div>
-              <h4 class="title"><a href="">Transfer</a></h4>
+              <div class="icon"><a href="/login"><i class="bi bi-send"></i></a></div>
+              <h4 class="title"><a href="/login">Transfer</a></h4>
               <p class="description">Send money from your account fast, free and safer</p>
             </div>
           </div>
@@ -228,7 +211,8 @@
       <div class="container" data-aos="fade-up">
         <div class="section-header">
           <h3 class="section-title">Team</h3>
-          <p class="section-description">Great things in World are never done by one person. They're done by a team of peaple.</p>
+          <p class="section-description">Great things in World are never done by one person. They're done by a team of
+            peaple.</p>
         </div>
         <div class="row">
           <div class="col-lg-3 col-md-6">
@@ -335,6 +319,27 @@
 
           <div class="col-lg-5 col-md-8">
             <div class="form">
+              <!-- Section message -->
+              <div class="message_area">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                {% if category == 'error' %}
+                <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% else %}
+                <div class="alert alert-success alter-dismissable fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+              </div>
               <form action="message" method="post" role="form" class="php-email-form">
                 <div class="form-group">
                   <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -351,7 +356,7 @@
                 <div class="my-3">
                   <div class="loading">Loading</div>
                   <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
+                  <div class="sent-message"></div>
                 </div>
                 <div class="text-center"><button type="submit">Send Message</button></div>
               </form>
@@ -364,122 +369,6 @@
     </section>
     <!-- End Contact Section -->
 
-    <!-- Sign in Section -->
-    <section id="sign-in-section" class="vh-100" style="background-color: #eee;">
-      <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-lg-12 col-xl-11">
-            <div class="card text-black" style="border-radius: 25px;">
-              <div class="card-body p-md-5">
-                <div class="row justify-content-center">
-                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign in</p>
-
-                    <form class="mx-1 mx-md-4">
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <input type="email" id="form3Example3c" class="form-control" />
-                          <label class="form-label" for="form3Example3c">Your Email</label>
-                        </div>
-                      </div>
-
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <input type="password" id="form3Example4c" class="form-control" />
-                          <label class="form-label" for="form3Example4c">Password</label>
-                        </div>
-                      </div>
-                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                        <button type="button" class="btn btn-primary btn-lg sign-btn">Log in</button>
-                      </div>
-                      
-
-                    </form>
-
-                  </div>
-                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
-                    <img class="sign-in-img" src="../static/img/sign-in.png"
-                      class="img-fluid" alt="Sample image">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
-
-    <!-- End Sign in -->
-
-    <!-- Sign Up Section -->
-
-    <section id="sign-up-section" class="vh-100" style="background-color: #eee;">
-      <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-lg-12 col-xl-11">
-            <div class="card text-black" style="border-radius: 25px;">
-              <div class="card-body p-md-5">
-                <div class="row justify-content-center">
-                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
-
-                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
-
-                    <form class="mx-1 mx-md-4">
-
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-user fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <input type="text" id="form3Example1c" class="form-control" />
-                          <label class="form-label" for="form3Example1c">Your Name</label>
-                        </div>
-                      </div>
-
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <input type="email" id="form3Example3c" class="form-control" />
-                          <label class="form-label" for="form3Example3c">Your Email</label>
-                        </div>
-                      </div>
-
-                      <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                        <div class="form-outline flex-fill mb-0">
-                          <input type="password" id="form3Example4c" class="form-control" />
-                          <label class="form-label" for="form3Example4c">Password</label>
-                        </div>
-                      </div>
-                      <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                        <button type="button" class="btn btn-primary btn-lg sign-btn">Register</button>
-                      </div>
-
-                    </form>
-
-                  </div>
-                  <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-
-                    <img class="sign-up-img" src="../static/img/sign-up.png"
-                      class="img-fluid" alt="Sample image">
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <div id="scorllto"></div>
-
-    <!-- End Sign Up Section -->
 
   </main><!-- End #main -->
 
