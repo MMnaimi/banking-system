@@ -27,18 +27,20 @@ def register():
 
     form = RegisterationForm()
     if request.method == "POST":
-        if not validate_username(form.username.data) or not validate_email(form.email.data):
-            flash("Username or Email is already taken")
-            return render_template('register.html', form = form)
-        user = User(fullname=form.fullname.data, username=form.username.data,
+        user = User()
+        check_data = user.custom_validation(form)
+        if check_data.get('state'):
+            user.create(fullname=form.fullname.data, username=form.username.data,
                             email=form.email.data, password=generate_password_hash(form.password.data), 
                             gender=form.gender.data, phone=form.phone.data, 
                             birth_date=form.birth_date.data)
+            db.session.add(user)
+            db.session.commit()
+            flash(f'Account created successfully for {form.username.data}', category='success',)
+            return redirect(url_for('login'))
+        else:
+            flash(f"{check_data.get('message')}", category="error")
 
-        db.session.add(user)
-        db.session.commit()
-        flash(f'Account created successfully for {form.username.data}', category='success',)
-        return redirect(url_for('login'))
 
     return render_template("register.html", form = form)
 

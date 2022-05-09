@@ -1,3 +1,4 @@
+from email import message
 from flask import render_template
 from app import db,login_manager
 from app.forms import RegisterationForm
@@ -49,7 +50,9 @@ class User(db.Model, UserMixin):
     phone =  db.Column(db.String(30), nullable=False)
     birth_date = db.Column(db.String(50))
     account = db.relationship('Account', cascade="all, delete", uselist=False, backref='')
-    def __init__(self, fullname, username , email, password, gender, phone, birth_date, state='pending', role='normal' ):
+
+
+    def create(self, fullname, username , email, password, gender, phone, birth_date, state='pending', role='normal' ):
         self.fullname = fullname
         self.username = username
         self.email = email
@@ -59,6 +62,29 @@ class User(db.Model, UserMixin):
         self.gender = gender
         self.phone = phone
         self.birth_date = birth_date
+    
+    
+    def custom_validation(self, form):
+        value = {'state':True, 'message':''}
+        check_username = self.query.filter_by(username=form.username.data).first()
+        check_email = self.query.filter_by(email=form.email.data).first()
+        if not form.fullname.data or not form.username.data \
+           or not form.email.data or not form.password.data \
+           or not form.gender.data or not form.phone.data \
+           or not form.birth_date.data:
+           value['state'] = False
+           value['message'] = "Field required"
+        
+        elif check_username:
+            value['state'] = False
+            value['message'] = "Username Already Exist"
+            
+        elif check_email:
+            value['state'] = False
+            value['message'] = "Email Already Exist"
+        return value
+            
+
 
 
 class Account(db.Model, UserMixin):

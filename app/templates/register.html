@@ -22,6 +22,26 @@
           <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
             <div class="card-body p-4 p-md-5">
               <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">Sign up</h3>
+              <div class="message_area">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'error' %}
+                              <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                              </div>
+                            {% else %}
+                                <div class="alert alert-success alter-dismissable fade show" role="alert">
+                                  {{ message }}
+                                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+              </div>
               <form method="POST">
 
                 <div class="row">
