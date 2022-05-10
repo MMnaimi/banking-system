@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import is_admin, is_sys_user
-from app.forms import RegisterationForm
+from app.forms import RegisterationForm, AdminProfileEditForm
 from app.models import User, Account, Transaction
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -18,7 +18,7 @@ def admin_users_settings(uid):
     if current_user.role == 'normal':
         return  render_template('404.html')
 
-    form = RegisterationForm()
+    form = AdminProfileEditForm()
     form.fullname.data = user.fullname
     form.username.data = user.username
     form.email.data = user.email
@@ -40,7 +40,7 @@ def admin_user_update():
     if current_user.role == 'normal':
         return redirect(url_for('homepage'))
         
-    form = RegisterationForm()
+    form = AdminProfileEditForm()
     record = User.query.filter_by(id=form.uid.data).first()
 
     if record.role =='admin':
@@ -48,20 +48,23 @@ def admin_user_update():
         return redirect(url_for('user_list'))
 
     if request.method == 'POST':
-        record.fullname = form.fullname.data
-        record.username = form.username.data
-        record.email = form.email.data
-        record.password = record.password
-        record.phone = form.phone.data
-        record.gender = form.gender.data
-        if current_user.role == 'admin':
-            record.role = form.role.data
+        if form.validate():
+            record.fullname = form.fullname.data
+            record.username = form.username.data
+            record.email = form.email.data
+            record.phone = form.phone.data
+            record.gender = form.gender.data
+            if current_user.role == 'admin':
+                record.role = form.role.data
+            else:
+                record.role = record.role
+            db.session.commit()
+            flash('User updated successfully!')
+            return redirect(url_for('user_list'))
         else:
-            record.role = record.role
-        db.session.commit()
-        return redirect(url_for('user_list'))
+            return render_template('admin_users_settings.html', form=form, user=record)
         
-    return render_template('index.html')
+    return redirect(url_for('homepage'))
 
 @app.route('/update-state/<uid>')
 def update_state(uid):
