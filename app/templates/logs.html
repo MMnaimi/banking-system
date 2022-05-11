@@ -57,12 +57,16 @@
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
+                                <th class="text-center">Transaction Type</th>
+                                <th class="text-center">Transaction Date</th>
                                 <th class="text-center">Balance</th>
                                 <th class="text-center">Receiver account</th>
                                 <th class="text-center">Account No</th>
-                                <th class="text-center">Transaction Type</th>
-                                <th class="text-center">Transaction Date</th>
+                                {% if current_user.role == 'admin' %}
                                 <th class="text-center">User ID</th>
+                                {% else %}
+                                <th class="text-center">Name</th>
+                                {% endif %}
 
                             </tr>
                         </thead>
@@ -71,12 +75,20 @@
                         <tbody>
                             <tr>
                                 <td class="text-center">{{ log.id }}</td>
-                                <td class="text-center">{{ log.balance }}</td>
-                                <td class="text-center">{{ log.receiver_ac }}</td>
-                                <td class="text-center">{{ log.account_no }}</td>
-                                <td class="text-center">{{ log.tran_type }}</td>
+                                <td class="text-center">{{ log.tran_type.capitalize() }}</td>
                                 <td class="text-center">{{ log.tran_date }}</td>
+                                <td class="text-center">{{ '{:,} AFs'.format(log.balance) }}</td>
+                                {% if log.receiver_ac %}
+                                    <td class="text-center">{{ log.receiver_ac }}</td>
+                                {% else %}
+                                    <td class="text-center">Not applicable</td>
+                                {% endif %}
+                                <td class="text-center">{{ log.account_no }}</td>
+                                {% if current_user.role == 'admin' %}
                                 <td class="text-center">{{ log.uid }}</td>
+                                {% else %}
+                                <td class="text-center">{{ current_user.fullname }}</td>
+                                {% endif %}
                             </tr>
 
                         </tbody>
@@ -84,7 +96,7 @@
                     </table>
                     {% else %}
                     <span class="success">
-                        <h3>No User Register Yet</h3>
+                        <h3>No Transaction Yet</h3>
                     </span>
                     {% endif %}
                 </div>

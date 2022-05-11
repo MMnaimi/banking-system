@@ -20,7 +20,7 @@ def for_normal_users(func):
 
 def check_password(password):
     """
-        This function check correctness of password against password stored in db.
+        This function check correctness of password against current user password stored in db.
 
         Return -> boolean
 
@@ -64,7 +64,7 @@ def log_transaction(**kwrgs):
         balance = kwrgs.get('amount'), 
         receiver_ac = kwrgs.get('receiver_ac'), 
         tran_type = kwrgs.get('tran_type'),  
-        tran_date = datetime.now(), 
+        tran_date = datetime.now().strftime("%b-%d-%Y %H:%M %p"), 
         uid = current_user.id, 
         account_no = kwrgs.get('account_no')
         )
@@ -94,17 +94,3 @@ def is_sys_user(uid):
     if user.role == 'sysuser':
         return True
     return False
-
-
-
-def validate_username(username):
-    user = User.query.filter_by(username=username).first()
-    if user:
-        return False
-    return True
-
-def validate_email(email):
-    user = User.query.filter_by(email=email).first()
-    if user:
-        return False
-    return True

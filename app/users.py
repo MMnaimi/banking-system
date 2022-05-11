@@ -1,10 +1,9 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
-from importlib_metadata import FileHash
 from app import app, db
-from app.functions import for_normal_users, check_password, balance_validaty, log_transaction, validate_email, validate_username
+from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm, UserProfileEditForm
-from app.models import User, Account, Message
+from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 
@@ -150,7 +149,7 @@ def transfer():
             error = True      
 
         if not error and not reciever or reciever.uid == sender.uid or not reciever.acc_status:   
-            flash("The account number you have entered is wrong or not activated yet", category="error")
+            flash("The account number you have entered is wrong or not active", category="error")
             error = True
 
         if not error and not balance_validaty(sender, amount):
@@ -249,3 +248,10 @@ def send_message():
         flash("Your message has been sent. Thank you!")
         return redirect('/#contact')
     return render_template('404.html')
+
+@app.route('/user/log', methods=['GET', 'POST'])
+@login_required
+@for_normal_users
+def user_log():
+    log = Transaction.query.filter(Transaction.uid == current_user.id).all()
+    return render_template('logs.html', logs = log)
