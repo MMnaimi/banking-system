@@ -24,31 +24,36 @@
               <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">Sign up</h3>
               <div class="message_area">
                 {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            {% if category == 'error' %}
-                              <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            {% else %}
-                                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                                  {{ message }}
-                                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for category, message in messages %}
+                {% if category == 'error' %}
+                <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% else %}
+                <div class="alert alert-success alter-dismissable fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
-                
+
               </div>
               <form method="POST">
-
+                {{ form.csrf_token() }}
                 <div class="row">
                   <div class="col-md-6 mb-4">
                     <div class="form-outline">
                       {{ form.fullname.label(class="form-label", for="fullName") }}
                       {{ form.fullname(class="form-control form-control-lg",id="fullName") }}
+                      {% if form.fullname.errors %}
+                      {% for err in form.fullname.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
 
                   </div>
@@ -57,28 +62,48 @@
                     <div class="form-outline">
                       {{ form.username.label(class="form-label", for="lastName") }}
                       {{ form.username(class="form-control form-control-lg",id="lastName") }}
+                      {% if form.username.errors %}
+                      {% for err in form.username.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
                   </div>
-                  
-                    <div class="col-md-6 mb-4">
-                      <div class="form-outline">
-                        {{ form.password.label(class="form-label", for="password") }}
-                        {{ form.password(class="form-control form-control-lg",id="password") }}
-                      </div>
 
+                  <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                      {{ form.password.label(class="form-label", for="password") }}
+                      {{ form.password(class="form-control form-control-lg",id="password") }}
+                      {% if form.password.errors %}
+                      {% for err in form.password.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <div class="form-outline">
-                        {{ form.confirm_password.label(class="form-label", for="confirmPassword") }}
-                        {{ form.confirm_password(class="form-control form-control-lg",id="confirmPassword") }}
-                      </div>
+                  </div>
+
+                  <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                      {{ form.confirm_password.label(class="form-label", for="confirmPassword") }}
+                      {{ form.confirm_password(class="form-control form-control-lg",id="confirmPassword") }}
+                      {% if form.confirm_password.errors %}
+                      {% for err in form.confirm_password.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
+                  </div>
 
                   <div class="col-md-6 mb-4 d-flex align-items-center">
                     <div class="form-outline datepicker w-100">
                       {{ form.birth_date.label(class="form-label", for="barithdayDate") }}
                       {{ form.birth_date(class="form-control form-control-lg",id="barithdayDate") }}
+                      {% if form.birth_date.errors %}
+                      {% for err in form.birth_date.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
                   </div>
                   <div class="col-md-6 mb-4">
@@ -88,18 +113,33 @@
                       {{ option }} {{option.label}}
                     </div>
                     {% endfor %}
+                    {% if form.gender.errors %}
+                      {% for err in form.gender.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                   </div>
 
                   <div class="col-md-6 mb-4">
                     <div class="form-outline">
                       {{ form.email.label(class="form-label", for="emailAddress") }}
                       {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
+                      {% if form.email.errors %}
+                      {% for err in form.email.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
                   </div>
                   <div class="col-md-6 mb-4 pt-2">
                     <div class="form-outline">
                       {{ form.phone.label(class="form-lable", for="phoneNumber") }}
                       {{ form.phone(class="form-control form-control-lg", id="phoneNumber") }}
+                      {% if form.phone.errors %}
+                      {% for err in form.phone.errors %}
+                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                      {% endfor %}
+                      {% endif %}
                     </div>
                   </div>
                 </div>

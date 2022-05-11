@@ -1,20 +1,18 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField, IntegerField, HiddenField
-from wtforms.validators import DataRequired, Length, EqualTo, Email
+from wtforms.validators import DataRequired, Length, EqualTo, Email, Regexp
 
 class RegisterationForm(FlaskForm):
     fullname = StringField(label="Full Name", validators=[DataRequired(), Length(max = 30)])
-    username = StringField(label='Username', validators=[DataRequired(), Length(min = 5, max = 20)])
-    account_no = StringField(label='Account No.', validators=[DataRequired(), Length(max = 30)])
+    username = StringField(label='Username', validators=[DataRequired(), Length(min = 5, max = 20), Regexp('^[a-zA-Z0-9_-]+$',message="Username must contain only letters, number, underscore or hyphen")])
     email = StringField(label='Email', validators=[DataRequired(), Email()])
     birth_date = DateField(label='Date of Birth')
     gender = RadioField(choices=[('male','Male'), ('female','Female'), ('other', 'Other')])
     phone = StringField(label="Phone")
     password = PasswordField(label='Passsword', validators=[Length(min = 8, max = 16), DataRequired()])
     confirm_password = PasswordField(label='Confirm Password', validators=[Length(min = 8, max = 16), DataRequired(), EqualTo('password')])
-    state = SelectField(label="State",choices=((True,'Active'), (False,'Pending')) ,validators=[DataRequired()])
-    role = SelectField(label="Role", choices=(('sysuser','System User'), ('normal','Normal User')), validators=[DataRequired()])
-    uid = HiddenField()
+    state = SelectField(label="State",choices=((True,'Active'), (False,'Pending')), default=(False) ,validators=[DataRequired()])
+    role = SelectField(label="Role", choices=(('sysuser','System User'), ('normal','Normal User')), default=('normal'), validators=[DataRequired()])
     submit = SubmitField(label='Sign up')
 
 class LoginForm(FlaskForm):
@@ -39,3 +37,25 @@ class TransactionForm(FlaskForm):
 class PasswordResetForm(FlaskForm):
     email = StringField(label='Email', validators=[DataRequired(), Email()])
     submit = SubmitField(label = 'Reset Password')
+
+class AdminProfileEditForm(FlaskForm):
+    fullname = StringField(label="Full Name", validators=[DataRequired(), Length(min = 5, max = 30)])
+    username = StringField(label='Username', validators=[DataRequired(), Length(min = 5, max = 20), Regexp('^[a-zA-Z0-9_-]+$', message="Username must contain only letters, numbers or underscore")])
+    email = StringField(label='Email', validators=[DataRequired(), Email()])
+    birth_date = DateField(label='Date of Birth')
+    phone = StringField(label="Phone")
+    gender = RadioField(choices=[('male','Male'), ('female','Female'), ('other', 'Other')])
+    role = SelectField(label="Role", choices=(('sysuser','System User'), ('normal','Normal User')), validators=[DataRequired()])
+    uid = HiddenField()
+    submit = SubmitField(label='Save Profile')
+
+
+class UserProfileEditForm(FlaskForm):
+    fullname = StringField(label="Full Name", validators=[DataRequired(), Length(max = 30)])
+    username = StringField(label='Username', validators=[DataRequired(), Length(min = 5, max = 20), Regexp('^[a-zA-Z0-9_-]+$', message="Username must contain only letters, numbers or underscore")])
+    email = StringField(label='Email', validators=[DataRequired(), Email()])
+    phone = StringField(label="Phone")
+    gender = RadioField(choices=[('male','Male'), ('female','Female'), ('other', 'Other')])
+    birth_date = DateField(label='Date of Birth')
+    submit = SubmitField(label='Save Profile')
+

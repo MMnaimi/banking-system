@@ -1,7 +1,6 @@
 from email import message
 from flask import render_template
 from app import db,login_manager
-from app.forms import RegisterationForm
 from flask_login import UserMixin
 from flask import render_template
 
@@ -17,9 +16,7 @@ def unauthorized():
     """
         This function is used for unauthorized users.
     """
-
-    form = RegisterationForm()
-    return render_template('404.html',form=form, message = "Unauthorized Accesss, Please Register first")
+    return render_template('404.html', message = "Unauthorized Accesss, Please Register first")
 
 class User(db.Model, UserMixin):
     """This Class represent the users table in the database.
@@ -50,6 +47,7 @@ class User(db.Model, UserMixin):
     phone =  db.Column(db.String(30), nullable=False)
     birth_date = db.Column(db.String(50))
     account = db.relationship('Account', cascade="all, delete", uselist=False, backref='')
+    transaction = db.relationship('Transaction', cascade='all, delete')
 
 
     def create(self, fullname, username , email, password, gender, phone, birth_date, state='pending', role='normal' ):
@@ -68,14 +66,7 @@ class User(db.Model, UserMixin):
         value = {'state':True, 'message':''}
         check_username = self.query.filter_by(username=form.username.data).first()
         check_email = self.query.filter_by(email=form.email.data).first()
-        if not form.fullname.data or not form.username.data \
-           or not form.email.data or not form.password.data \
-           or not form.gender.data or not form.phone.data \
-           or not form.birth_date.data:
-           value['state'] = False
-           value['message'] = "Field required"
-        
-        elif check_username:
+        if check_username:
             value['state'] = False
             value['message'] = "Username Already Exist"
             
@@ -83,7 +74,6 @@ class User(db.Model, UserMixin):
             value['state'] = False
             value['message'] = "Email Already Exist"
         return value
-            
 
 
 
@@ -134,7 +124,7 @@ class Transaction(db.Model):
     account_no = db.Column(db.String(30), nullable = False)
     tran_type = db.Column(db.String(30), nullable = False)
     tran_date = db.Column(db.String(30), nullable = False)
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+    uid = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Message(db.Model):

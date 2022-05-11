@@ -27,24 +27,49 @@
                             <h4 class="text-right">{{ user.fullname }} </h4>
                         </div>
                         <form action="/user/update-profile" method="POST">
+                            {{ form.csrf_token() }}
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     {{ form.fullname.label(class="labels") }}
                                     {{ form.fullname(class="form-control") }}
+                                    {% if  form.fullname.errors %}
+                                        {% for err in  form.fullname.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-6">
                                     {{ form.username.label(class="labels") }}
                                     {{ form.username(class="form-control") }}
+                                    {% if  form.username.errors %}
+                                        {% for err in  form.username.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if msg %}
+                                    <p class="text-danger" style="font-size: 12px;">{{ msg }}</p>
+                                    {% endif %}
+
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-md-12 mt-3">
                                     {{ form.email.label(class="labels") }}
                                     {{ form.email(class="form-control") }}
+                                    {% if  form.email.errors %}
+                                        {% for err in  form.email.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     {{ form.phone.label(class="labels") }}
                                     {{ form.phone(class="form-control") }}
+                                    {% if  form.phone.errors %}
+                                        {% for err in  form.phone.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
 
                                 </div>
                                 <div class="col-md-12 mt-3" style="margin-top: 25px;">
@@ -54,11 +79,21 @@
                                         {{ option }} {{option.label}}
                                     </div>
                                     {% endfor %}
+                                    {% if  form.gender.errors %}
+                                        {% for err in  form.gender.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
 
                                 </div>
                                 <div class="col-md-12 mt-3">
                                     {{ form.birth_date.label(class="labels") }}
                                     {{ form.birth_date(class="form-control") }}
+                                    {% if  form.birth_date.errors %}
+                                        {% for err in  form.birth_date.errors %}
+                                            <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                                        {% endfor %}
+                                    {% endif %}
 
                                 </div>
                                 

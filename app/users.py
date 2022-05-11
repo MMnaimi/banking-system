@@ -3,7 +3,7 @@ from importlib_metadata import FileHash
 from app import app, db
 from app.functions import for_normal_users, check_password, balance_validaty, log_transaction, validate_email, validate_username
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm
+from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm, UserProfileEditForm
 from app.models import User, Account, Message
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
@@ -29,6 +29,8 @@ def register():
     if request.method == "POST":
         user = User()
         check_data = user.custom_validation(form)
+        if not form.validate():
+            return render_template('register.html', form=form)
         if check_data.get('state'):
             user.create(fullname=form.fullname.data, username=form.username.data,
                             email=form.email.data, password=generate_password_hash(form.password.data), 
@@ -42,7 +44,7 @@ def register():
             flash(f"{check_data.get('message')}", category="error")
 
 
-    return render_template("register.html", form = form)
+    return render_template("register.html", form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -180,7 +182,7 @@ def profile_settings():
     """
         This function load profile settings page.
     """
-    form = RegisterationForm()
+    form = UserProfileEditForm()
     user = User.query.filter_by(id=current_user.id).first()
     form.fullname.data = user.fullname
     form.username.data = user.username
@@ -210,11 +212,9 @@ def update_user():
     """
     record = User.query.filter_by(id=current_user.id).first()
     if record.role !='admin':
-        form = RegisterationForm()
+        form = UserProfileEditForm()
         if request.method == 'POST':
-            user = User()
-            check_data = user.custom_validation(form)
-            if check_data.get('state'):
+            if form.validate():
                 record.fullname = form.fullname.data
                 record.username = form.username.data
                 record.email = form.email.data
@@ -222,9 +222,10 @@ def update_user():
                 record.gender = form.gender.data
                 record.birth_date = form.birth_date.data
                 db.session.commit()
+                flash('Profile updated successfully', category='success')
                 return redirect(url_for('profile'))
             else:
-                flash(f"{check_data.get('message')}", category="error")
+             return render_template('user_profile_settings.html', form=form, user=record)
 
     return render_template('index.html')
 
