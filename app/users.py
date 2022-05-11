@@ -29,6 +29,8 @@ def register():
     if request.method == "POST":
         user = User()
         check_data = user.custom_validation(form)
+        if not form.validate():
+            return render_template('register.html', form=form)
         if check_data.get('state'):
             user.create(fullname=form.fullname.data, username=form.username.data,
                             email=form.email.data, password=generate_password_hash(form.password.data), 
@@ -42,7 +44,7 @@ def register():
             flash(f"{check_data.get('message')}", category="error")
 
 
-    return render_template("register.html", form = form)
+    return render_template("register.html", form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
