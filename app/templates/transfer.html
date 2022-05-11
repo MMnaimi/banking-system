@@ -7,47 +7,63 @@
 {% block trans_body %}
 
 <form action="" method="post">
-    <div class="row">
-        <div class="col-md-6 mb-4">
-          <div class="form-outline mb-2">
-            {{ form.amount.label(class="form-label", for="amount") }}
-            {{ form.amount(class="form-control form-control-lg",id="amount") }}
-          </div>
+  {{ form.csrf_token() }}
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="form-outline mb-2">
+        {{ form.amount.label(class="form-label", for="amount") }}
+        {{ form.amount(class="form-control form-control-lg",id="amount") }}
+        {% if form.amount.errors %}
+        {% for err in form.amount.errors %}
+          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+        {% endfor %}
+        {% endif %}
+      </div>
 
-          <div class="form-outline mb-2">
-            {{ form.account_no.label(class="form-label", for="amount") }}
-            {{ form.account_no(class="form-control form-control-lg",id="amount") }}
-          </div>
+      <div class="form-outline mb-2">
+        {{ form.account_no.label(class="form-label", for="amount") }}
+        {{ form.account_no(class="form-control form-control-lg",id="amount") }}
+        {% if form.account_no.errors %}
+        {% for err in form.account_no.errors %}
+          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+        {% endfor %}
+        {% endif %}
+      </div>
 
-          <div class="form-outline">
-            {{ form.password.label(class="form-label", for="password") }}
-            {{ form.password(class="form-control form-control-lg",id="password") }}
-          </div>
+      <div class="form-outline">
+        {{ form.password.label(class="form-label", for="password") }}
+        {{ form.password(class="form-control form-control-lg",id="password") }}
+        {% if form.password.errors %}
+        {% for err in form.password.errors %}
+          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+        {% endfor %}
+        {% endif %}
+      </div>
 
 
-        </div>
-        <div class="col-md-3 mt-4" id="info">
-          <div>
-            <strong>Name: </strong>
-            <span style="color:#2dc997; font-weight:1000;">{{ current_user.fullname.upper() }}</span>
-          </div>
-          <div class="mt-1">
-            <strong>Account No: </strong>
-            <span style="color:#2dc997; font-weight:1000;">{{ account.account_no }}</span>
-          </div>
-          <div class="mt-1">
-            <strong>Current balance:</strong>
-            <span style="color:#2dc997; font-weight:1000;">{{ account.balance }}Afs</span>
-          </div>
-        </div>
     </div>
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="form-outline">
-              {{ form.submit(class="btn btn-trans",id="transfer", value="Transfer") }}
-            </div>
-        </div>
+    <div class="col-md-3 mt-4" id="info">
+      <div>
+        <strong>Name: </strong>
+        <span style="color:#2dc997; font-weight:1000;">{{ current_user.fullname.upper() }}</span>
+      </div>
+      <div class="mt-1">
+        <strong>Account No: </strong>
+        <span style="color:#2dc997; font-weight:1000;">{{ account.account_no }}</span>
+      </div>
+      <div class="mt-1">
+        <strong>Current balance:</strong>
+        <span style="color:#2dc997; font-weight:1000;">{{ '{:,.2f} AFs'.format(account.balance) }}</span>
+      </div>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="form-outline">
+        {{ form.submit(class="btn btn-trans",id="transfer", value="Transfer") }}
+      </div>
+    </div>
+  </div>
 </form>
 
 {% endblock %}

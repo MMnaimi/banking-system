@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms import RegisterationForm, LoginForm, TransactionForm, PasswordResetForm, UserProfileEditForm
+from app.forms import RegisterationForm, LoginForm, WithdrawForm, DepositForm, TransferForm, PasswordResetForm, UserProfileEditForm
 from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
@@ -83,11 +83,13 @@ def withdraw():
         withdraw money for normal users
     """
     account = Account.query.filter_by(uid = current_user.id).first()
-    form = TransactionForm()
+    form = WithdrawForm()
     amount = form.amount.data
     error = False
     if request.method == 'POST':
-
+        if not form.validate():
+            return render_template('withdraw.html', form=form, account=account)
+            
         if not check_password(form.password.data):
             flash(f"You have entered Incorrect password for user {current_user.username}, Please try agian!", category='error')
             error = True
@@ -114,9 +116,12 @@ def deposit():
     """
 
     account = Account.query.filter_by(uid = current_user.id).first()
-    form = TransactionForm()
+    form = DepositForm()
     amount = form.amount.data
     if request.method == 'POST':
+
+        if not form.validate():
+            return render_template('deposit.html', form=form, account=account)
 
         if not check_password(form.password.data):
             flash(f'You have entered incorrect password for user {current_user.fullname}, Please try again!', category='error')
@@ -138,17 +143,21 @@ def transfer():
     """
     default_redirect = 'transfer.html'
     sender  = Account.query.filter_by(uid = current_user.id).first()
-    form = TransactionForm()
+    form = TransferForm()
     amount = form.amount.data
     error = False
     if request.method == 'POST':
-        reciever = Account.query.filter_by(account_no = form.account_no.data).first()
+        if not form.validate():
+            return render_template('transfer.html', form=form, account=sender)
+            
+        receiver = Account.query.filter_by(account_no = form.account_no.data).first()
+        receive_account_owner = User.query.filter_by(id=receiver.uid).first()
 
         if not check_password(form.password.data):
             flash(f"You have entered incorrect password for user {current_user.fullname}, Please try again!", category='error')
             error = True      
 
-        if not error and not reciever or reciever.uid == sender.uid or not reciever.acc_status:   
+        if not error and not receiver or receiver.uid == sender.uid or not receiver.acc_status or receive_account_owner.role == 'sysuser':   
             flash("The account number you have entered is wrong or not active", category="error")
             error = True
 
@@ -157,9 +166,9 @@ def transfer():
             error = True      
 
         if not error:
-            reciever.balance += amount
+            receiver.balance += amount
             sender.balance -= amount
-            log_transaction(amount=amount, receiver_ac=reciever.account_no, tran_type='transfer', account_no=sender.account_no)
+            log_transaction(amount=amount, receiver_ac=receiver.account_no, tran_type='transfer', account_no=sender.account_no)
             db.session.commit()
             flash("Transfer done successfully", category="success")
             return redirect(url_for('transfer'))

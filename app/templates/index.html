@@ -50,27 +50,30 @@
           <li><a class="nav-link scrollto" href="#services">Services</a></li>
           <li><a class="nav-link scrollto" href="#team">Team</a></li>
           {% if current_user.role == 'normal' %}
-          <li class="dropdown"><a href="#"><span>Features</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="withdraw">Withdraw</a></li>
-              <li><a href="deposit">Deposit</a></li>
-              <li><a href="transfer">Transfer</a></li>
+            <li class="dropdown"><a href="#"><span>Features</span> <i class="bi bi-chevron-down"></i></a>
+              <ul>
+                <li><a href="withdraw">Withdraw</a></li>
+                <li><a href="deposit">Deposit</a></li>
+                <li><a href="transfer">Transfer</a></li>
 
-            </ul>
-          </li>
+              </ul>
+            </li>
+            <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
           {% endif %}
-          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+
           {% if current_user.is_authenticated %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{
-                current_user.fullname }}</b></a></li>
-          {% if current_user.role == 'admin'or current_user.role == 'sysuser' %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/log">logs</a></li>
-          {% endif %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/logout">log out</a></li>
+            <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{
+                  current_user.fullname }}</b></a></li>
+            {% if current_user.role == 'admin'or current_user.role == 'sysuser' %}
+              <li><a class="nav-link scrollto sign-item" id="signin-item" href="/users">Manage Users</a></li>
+              <li><a class="nav-link scrollto sign-item" id="signin-item" href="/log">logs</a></li>
+            {% else %}
+              <li><a class="nav-link scrollto sign-item" id="signin-item" href="/user/log">logs</a></li>
+            {% endif %}
+            <li><a class="nav-link scrollto sign-item" id="signin-item" href="/logout">log out</a></li>
           {% else %}
-          <li><a class="nav-link scrollto sign-item" id="signin-item" href="/login">Sign in</a></li>
-          <li><a class="nav-link scrollto sign-item" id="signup-item" href="/register">Sign up</a></li>
+            <li><a class="nav-link scrollto sign-item" id="signin-item" href="/login">Sign in</a></li>
+            <li><a class="nav-link scrollto sign-item" id="signup-item" href="/register">Sign up</a></li>
           {% endif %}
 
         </ul>
@@ -275,99 +278,101 @@
       </div>
     </section><!-- End Team Section -->
 
-    <!-- ======= Contact Section ======= -->
-    <section id="contact">
-      <div class="container">
-        <div class="section-header">
-          <h3 class="section-title">Contact</h3>
-          <p class="section-description">Email us with any questions or inquiries or call 773 535 034. Wallet team would
-            be happy to answer your questions and set up a meeting with you if necessary!</p>
+    {% if current_user.role == 'normal' %}
+      <!-- ======= Contact Section ======= -->
+      <section id="contact">
+        <div class="container">
+          <div class="section-header">
+            <h3 class="section-title">Contact</h3>
+            <p class="section-description">Email us with any questions or inquiries or call 773 535 034. Wallet team would
+              be happy to answer your questions and set up a meeting with you if necessary!</p>
+          </div>
         </div>
-      </div>
 
-      <div class="container mt-5">
-        <div class="row justify-content-center">
+        <div class="container mt-5">
+          <div class="row justify-content-center">
 
-          <div class="col-lg-3 col-md-4">
+            <div class="col-lg-3 col-md-4">
 
-            <div class="info">
-              <div>
-                <i class="bi bi-geo-alt"></i>
-                <p>NETLINKES Plaza Floor 1, Street 6<br>Kabul, Shar-e-naw</p>
+              <div class="info">
+                <div>
+                  <i class="bi bi-geo-alt"></i>
+                  <p>NETLINKES Plaza Floor 1, Street 6<br>Kabul, Shar-e-naw</p>
+                </div>
+
+                <div>
+                  <i class="bi bi-envelope"></i>
+                  <p>mm.naimi@yahoo.com</p>
+                </div>
+
+                <div>
+                  <i class="bi bi-phone"></i>
+                  <p>+93 773 535 034</p>
+                </div>
               </div>
 
-              <div>
-                <i class="bi bi-envelope"></i>
-                <p>mm.naimi@yahoo.com</p>
+              <div class="social-links">
+                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
               </div>
 
-              <div>
-                <i class="bi bi-phone"></i>
-                <p>+93 773 535 034</p>
-              </div>
             </div>
 
-            <div class="social-links">
-              <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-              <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-              <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            <div class="col-lg-5 col-md-8">
+              <div class="form">
+                <!-- Section message -->
+                <div class="message_area">
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                  {% for category, message in messages %}
+                  {% if category == 'error' %}
+                  <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% else %}
+                  <div class="alert alert-success alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                  {% endif %}
+                  {% endwith %}
+
+                </div>
+                <form action="message" method="post" role="form" class="php-email-form">
+                  <div class="form-group">
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                  </div>
+                  <div class="form-group mt-3">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                  </div>
+                  <div class="form-group mt-3">
+                    <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+                  </div>
+                  <div class="form-group mt-3">
+                    <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                  </div>
+                  <div class="my-3">
+                    <div class="loading">Loading</div>
+                    <div class="error-message"></div>
+                    <div class="sent-message"></div>
+                  </div>
+                  <div class="text-center"><button type="submit">Send Message</button></div>
+                </form>
+              </div>
             </div>
 
           </div>
 
-          <div class="col-lg-5 col-md-8">
-            <div class="form">
-              <!-- Section message -->
-              <div class="message_area">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% else %}
-                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
-
-              </div>
-              <form action="message" method="post" role="form" class="php-email-form">
-                <div class="form-group">
-                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-                </div>
-                <div class="form-group mt-3">
-                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-                </div>
-                <div class="form-group mt-3">
-                  <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-                </div>
-                <div class="form-group mt-3">
-                  <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
-                </div>
-                <div class="my-3">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message"></div>
-                </div>
-                <div class="text-center"><button type="submit">Send Message</button></div>
-              </form>
-            </div>
-          </div>
-
         </div>
-
-      </div>
-    </section>
-    <!-- End Contact Section -->
+      </section>
+      <!-- End Contact Section -->
+    {% endif %}
 
 
   </main><!-- End #main -->

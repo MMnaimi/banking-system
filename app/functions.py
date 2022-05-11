@@ -1,5 +1,4 @@
 from functools import wraps
-from xml.dom import ValidationErr
 from flask import Flask, render_template
 from app import db
 from werkzeug.security import  check_password_hash
