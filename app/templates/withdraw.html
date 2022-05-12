@@ -5,7 +5,6 @@
 {% block trans_title %} Withdraw money from your account {% endblock %}
 
 {% block trans_body %}
-
 <form action="" method="post">
   {{ form.csrf_token() }}
   <div class="row">
@@ -33,7 +32,7 @@
 
     <div class="col-md-3 mt-4" id="info">
       <div>
-        <strong>Name: </strong>
+        <strong>Account Holder: </strong>
         <span style="color:#2dc997; font-weight:1000;">{{ current_user.fullname.upper() }}</span>
       </div>
       <div class="mt-1">
@@ -42,7 +41,7 @@
       </div>
       <div class="mt-1">
         <strong>Current balance:</strong>
-        <span style="color:#2dc997; font-weight:1000;">{{ '{:,.2f} AFs'.format(account.balance) }}</span>
+        <span style="color:#2dc997; font-weight:1000;">{{ '{:,.2f} AFN'.format(account.balance) }}</span>
       </div>
     </div>
 

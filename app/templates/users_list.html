@@ -54,14 +54,14 @@
                     {% if users %}
                     <thead>
                         <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center">Fullname</th>						
+                            <th class="text-center">Uid</th>
+                            <th class="text-center">Full name</th>						
                             <th class="text-center">Username</th>
-                            <th class="text-center">Account No.</th>
                             <th class="text-center">Gender</th>
-                            <th class="text-center">Role</th>
-                            <th class="text-center">Phone</th>
                             <th class="text-center">Email</th>
+                            <th class="text-center">Phone</th>
+                            <th class="text-center">Role</th>
+                            <th class="text-center">Account No.</th>
                             <th class="text-center">State</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -73,12 +73,15 @@
                             <td class="text-center">{{ user.id }}</td>
                             <td class="text-center">{{ user.fullname }}</td>
                             <td class="text-center">{{ user.username }}</td>
+                            <td class="text-center">{{ user.gender.capitalize() }}</td>
+                            <td class="text-center">{{ user.email }}</td>
+                            <td class="text-center">{{ user.phone }}</td>
+
                             {% if user.account_no %}
                             <td class="text-center">{{ user.account_no }}</td>
                             {% else %}
                             <td class="text-center" style="color:#848080;">Not applicable</td>
                             {% endif %}
-                            <td class="text-center">{{ user.gender }}</td>
                             <td class="text-center">
                                 {% if user.role == 'admin' %}
                                 Admin
@@ -87,24 +90,25 @@
                                 {% else %}
                                 Customer
                                 {% endif %}
-                            </td>                        
-                            <td class="text-center">{{ user.phone }}</td>
-                            <td class="text-center">{{ user.email }}</td>
+                            </td>  
                             <td class="text-center" style="text-align: center;">
                                 {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
-                                <a class="state-active" href="/update-state/{{ user.id }}">Active</a>
+                                <a class="state-active" href="/update-state/{{ user.id }}">Activate</a>
                                 {% elif user.state == 'active' and user.role != 'admin' %}
-                                <a class="state-pending" href="/update-state/{{ user.id }}">deactive</a>
-                                {% elif user.state == 'pending' and user.role != 'admin' %}
-                                <a class="state-pending" href="/update-state/{{ user.id }}">Pending</a>
+                                <a class="state-pending" href="/update-state/{{ user.id }}">Deactivate</a>
+                                {% else %}
+                                __
                                 {% endif %}
                             </td>
-                            {% if user.role != 'admin' %}
+
                             <td class="text-center">
+                                {% if user.role != 'admin' %}
                                 <a href="/admin/user-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
                                 <a id="delete-user" onclick="delete_confirm(event)" href="/delete/{{user.id}}" class="delete" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
+                                {% else %}
+                                __
+                                {% endif %}
                             </td>
-                            {% endif %}
                         </tr>
                         
                         {% endfor %}

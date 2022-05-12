@@ -151,13 +151,12 @@ def transfer():
             return render_template('transfer.html', form=form, account=sender)
             
         receiver = Account.query.filter_by(account_no = form.account_no.data).first()
-        receive_account_owner = User.query.filter_by(id=receiver.uid).first()
 
         if not check_password(form.password.data):
             flash(f"You have entered incorrect password for user {current_user.fullname}, Please try again!", category='error')
             error = True      
 
-        if not error and not receiver or receiver.uid == sender.uid or not receiver.acc_status or receive_account_owner.role == 'sysuser':   
+        if not error and not receiver or receiver.uid == sender.uid or not receiver.acc_status:   
             flash("The account number you have entered is wrong or not active", category="error")
             error = True
 

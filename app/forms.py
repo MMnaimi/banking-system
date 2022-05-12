@@ -4,22 +4,22 @@ from wtforms.validators import DataRequired, Length, EqualTo, Email, Regexp, Num
 
 
 class RegisterationForm(FlaskForm):
-    fullname = StringField(label="Full Name", validators=[DataRequired(), Length(max = 30)])
-    username = StringField(label='Username', validators=[DataRequired(), Length(min = 5, max = 20), Regexp('^[a-zA-Z0-9_-]+$',message="Username must contain only letters, number, underscore or hyphen")])
-    email = StringField(label='Email', validators=[DataRequired(), Email()])
+    fullname = StringField(label="Full Name", render_kw={'placeholder':'Enter Fullname'}, validators=[DataRequired(), Length(max = 30)])
+    username = StringField(label='Username', render_kw={'placeholder':'Enter Username'}, validators=[DataRequired(), Length(min = 5, max = 20), Regexp('^[a-zA-Z0-9_-]+$',message="Username must contain only letters, number, underscore or hyphen")])
+    email = StringField(label='Email', render_kw={'placeholder':'Enter Email'}, validators=[DataRequired(), Email()])
     birth_date = DateField(label='Date of Birth')
     gender = RadioField(choices=[('male','Male'), ('female','Female'), ('other', 'Other')])
-    phone = StringField(label="Phone")
-    password = PasswordField(label='Passsword', validators=[Length(min = 8, max = 16), DataRequired()])
-    confirm_password = PasswordField(label='Confirm Password', validators=[Length(min = 8, max = 16), DataRequired(), EqualTo('password')])
+    phone = StringField(label="Phone",render_kw={'placeholder':'Enter phone number'} )
+    password = PasswordField(label='Passsword', render_kw={'placeholder':'Enter password'}, validators=[Length(min = 8, max = 16), DataRequired()])
+    confirm_password = PasswordField(label='Confirm Password', render_kw={'placeholder':'Confirm Password'}, validators=[Length(min = 8, max = 16), DataRequired(), EqualTo('password')])
     state = SelectField(label="State",choices=((True,'Active'), (False,'Pending')), default=(False) ,validators=[DataRequired()])
     role = SelectField(label="Role", choices=(('sysuser','System User'), ('normal','Normal User')), default=('normal'), validators=[DataRequired()])
     submit = SubmitField(label='Sign up')
 
 
 class LoginForm(FlaskForm):
-    email = StringField(label='Email', validators=[DataRequired(), Email()])
-    password = PasswordField(label='Passsword', validators=[DataRequired()])
+    email = StringField(label='Email', render_kw={'placeholder':'Enter Email'}, validators=[DataRequired(), Email()])
+    password = PasswordField(label='Passsword', render_kw={'placeholder':'Enter Password'}, validators=[DataRequired()])
     submit = SubmitField(label='Log in')
 
 
@@ -32,21 +32,21 @@ class ContactForm(FlaskForm):
 
 
 class WithdrawForm(FlaskForm):
-    amount = IntegerField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=20000, message="Amount must be between 500 and 20000")])
-    password = PasswordField(label='Password', render_kw={'placeholder':'Password...', 'class':'form-control'}, validators=[DataRequired()])
+    amount = IntegerField(label='Amount To Withdraw', render_kw={'placeholder':'min:500Afs max 20000Afs', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=20000, message="Amount must be between 500 and 20000")])
+    password = PasswordField(label='Password', render_kw={'placeholder':'Password', 'class':'form-control'}, validators=[DataRequired()])
     submit = SubmitField(label='Done')
 
 
 class DepositForm(FlaskForm):
-    amount = IntegerField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=1000000, message="Amount must be between 500 and 1000000")])
-    password = PasswordField(label='Password', render_kw={'placeholder':'Password...', 'class':'form-control'}, validators=[DataRequired()])
+    amount = IntegerField(label='Amount To Deposit', render_kw={'placeholder':'min:500Afs max 1000000Afs', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=1000000, message="Amount must be between 500 and 1000000")])
+    password = PasswordField(label='Password', render_kw={'placeholder':'Password', 'class':'form-control'}, validators=[DataRequired()])
     submit = SubmitField(label='Done')
 
 
 class TransferForm(FlaskForm):
-    account_no = StringField(label='Account number',render_kw={'placeholder':'Account No.', 'class':'form-control'}, validators=[DataRequired()])
-    amount = IntegerField(label='Amount', render_kw={'placeholder':'Amount of money...', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=20000, message="Amount must be between 500 and 20000")])
-    password = PasswordField(label='Password', render_kw={'placeholder':'Password...', 'class':'form-control'}, validators=[DataRequired()])
+    account_no = StringField(label='Transfer To',render_kw={'placeholder':'Account No.', 'class':'form-control'}, validators=[DataRequired()])
+    amount = IntegerField(label='Amount To Transfer', render_kw={'placeholder':'min:500Afs max 20000Afs', 'class':'form-control'}, validators=[DataRequired(), NumberRange(min=500, max=20000, message="Amount must be between 500 and 20000")])
+    password = PasswordField(label='Password', render_kw={'placeholder':'Password', 'class':'form-control'}, validators=[DataRequired()])
     submit = SubmitField(label='Done')
 
 

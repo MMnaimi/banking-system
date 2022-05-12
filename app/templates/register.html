@@ -11,145 +11,152 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static',filename='css/forms1.css') }}">
-  <title>{% block title %}Register{% endblock %}</title>
+  <title>Sign up</title>
 </head>
 
 <body>
   <section class="vh-100 gradient-custom">
     <div class="container py-5 h-100">
-      <div class="row justify-content-center align-items-center vh-100">
-        <div class="col-12 col-lg-9 col-xl-7">
-          <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-            <div class="card-body p-4 p-md-5">
-              <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">Sign up</h3>
-              <div class="message_area">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="row justify-content-center vh-100">
+        <div class="auth-form-area">
+          <img class="img-fluid img-up" src="../static/img/sign-up.png" alt="sign in">
+          <div class="col-12 col-lg-9 col-xl-7">
+            <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+              <div class="card-body p-4 p-md-5">
+                <div class="message_area">
+                  {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                  {% for category, message in messages %}
+                  {% if category == 'error' %}
+                  <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% else %}
+                  <div class="alert alert-success alter-dismissable fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                  {% endif %}
+                  {% endwith %}
+  
                 </div>
-                {% else %}
-                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                  {{ message }}
-                  <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
+                <form method="POST">
+                  {{ form.csrf_token() }}
+                  <div class="row">
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        {{ form.fullname.label(class="form-label", for="fullName") }}
+                        <span class="asterisk">*</span>
+                        {{ form.fullname(class="form-control form-control-lg",id="fullName") }}
+                        {% if form.fullname.errors %}
+                        {% for err in form.fullname.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+  
+                    </div>
+  
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        {{ form.username.label(class="form-label", for="lastName") }}
+                        <span class="asterisk">*</span>
+                        {{ form.username(class="form-control form-control-lg",id="lastName") }}
+                        {% if form.username.errors %}
+                        {% for err in form.username.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        {{ form.email.label(class="form-label", for="emailAddress") }}
+                        <span class="asterisk">*</span>
+                        {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
+                        {% if form.email.errors %}
+                        {% for err in form.email.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4 pt-2">
+                      <div class="form-outline">
+                        {{ form.phone.label(class="form-lable", for="phoneNumber") }}
+                        <span class="asterisk">*</span>
+                        {{ form.phone(class="form-control form-control-lg", id="phoneNumber") }}
+                        {% if form.phone.errors %}
+                        {% for err in form.phone.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4 d-flex align-items-center">
+                      <div class="form-outline datepicker w-100">
+                        {{ form.birth_date.label(class="form-label", for="barithdayDate") }}
+                        <span class="asterisk">*</span>
+                        {{ form.birth_date(class="form-control form-control-lg",id="barithdayDate") }}
+                        {% if form.birth_date.errors %}
+                        {% for err in form.birth_date.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                      <p class="mb-2 pb-1">Gender <span class="asterisk">*</span></p>
+                      {% for option in form.gender %}
+                      <div class="form-check form-check-inline">
+                        {{ option }} {{option.label}}
+                      </div>
+                      {% endfor %}
+                      {% if form.gender.errors %}
+                        {% for err in form.gender.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
 
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        {{ form.password.label(class="form-label", for="password") }}
+                        <span class="asterisk">*</span>
+                        {{ form.password(class="form-control form-control-lg",id="password") }}
+                        {% if form.password.errors %}
+                        {% for err in form.password.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+  
+                    </div>
+  
+                    <div class="col-md-6 mb-4">
+                      <div class="form-outline">
+                        {{ form.confirm_password.label(class="form-label", for="confirmPassword") }}
+                        <span class="asterisk">*</span>
+                        {{ form.confirm_password(class="form-control form-control-lg",id="confirmPassword") }}
+                        {% if form.confirm_password.errors %}
+                        {% for err in form.confirm_password.errors %}
+                          <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div class="mt-4 pt-2" id="sign-up">
+                    {{ form.submit(class="btn btn-primary btn-lg", value="Sign up") }}
+                    <span>Have you already and account?</span> <a href="/login">Log in</a>
+                  </div>
+  
+                </form>
               </div>
-              <form method="POST">
-                {{ form.csrf_token() }}
-                <div class="row">
-                  <div class="col-md-6 mb-4">
-                    <div class="form-outline">
-                      {{ form.fullname.label(class="form-label", for="fullName") }}
-                      {{ form.fullname(class="form-control form-control-lg",id="fullName") }}
-                      {% if form.fullname.errors %}
-                      {% for err in form.fullname.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-
-                  </div>
-
-                  <div class="col-md-6 mb-4">
-                    <div class="form-outline">
-                      {{ form.username.label(class="form-label", for="lastName") }}
-                      {{ form.username(class="form-control form-control-lg",id="lastName") }}
-                      {% if form.username.errors %}
-                      {% for err in form.username.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-                  </div>
-
-                  <div class="col-md-6 mb-4">
-                    <div class="form-outline">
-                      {{ form.password.label(class="form-label", for="password") }}
-                      {{ form.password(class="form-control form-control-lg",id="password") }}
-                      {% if form.password.errors %}
-                      {% for err in form.password.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-
-                  </div>
-
-                  <div class="col-md-6 mb-4">
-                    <div class="form-outline">
-                      {{ form.confirm_password.label(class="form-label", for="confirmPassword") }}
-                      {{ form.confirm_password(class="form-control form-control-lg",id="confirmPassword") }}
-                      {% if form.confirm_password.errors %}
-                      {% for err in form.confirm_password.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-                  </div>
-
-                  <div class="col-md-6 mb-4 d-flex align-items-center">
-                    <div class="form-outline datepicker w-100">
-                      {{ form.birth_date.label(class="form-label", for="barithdayDate") }}
-                      {{ form.birth_date(class="form-control form-control-lg",id="barithdayDate") }}
-                      {% if form.birth_date.errors %}
-                      {% for err in form.birth_date.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-4">
-                    <h6 class="mb-2 pb-1">Gender: </h6>
-                    {% for option in form.gender %}
-                    <div class="form-check form-check-inline">
-                      {{ option }} {{option.label}}
-                    </div>
-                    {% endfor %}
-                    {% if form.gender.errors %}
-                      {% for err in form.gender.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                  </div>
-
-                  <div class="col-md-6 mb-4">
-                    <div class="form-outline">
-                      {{ form.email.label(class="form-label", for="emailAddress") }}
-                      {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
-                      {% if form.email.errors %}
-                      {% for err in form.email.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="col-md-6 mb-4 pt-2">
-                    <div class="form-outline">
-                      {{ form.phone.label(class="form-lable", for="phoneNumber") }}
-                      {{ form.phone(class="form-control form-control-lg", id="phoneNumber") }}
-                      {% if form.phone.errors %}
-                      {% for err in form.phone.errors %}
-                        <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
-                      {% endfor %}
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mt-4 pt-2" id="sign-up">
-                  {{ form.submit(class="btn btn-primary btn-lg", value="Sign up") }}
-                  Have you already and account? <a href="/login" style="font-weight: bold;">Log in</a>
-                </div>
-
-              </form>
             </div>
           </div>
         </div>

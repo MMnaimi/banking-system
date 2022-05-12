@@ -148,5 +148,7 @@ def user_list():
 def logs():
     if current_user.role == 'normal':
         return redirect(url_for('homepage'))
-    logs =  Transaction.query.all()
+    logs = db.session.query(Transaction, User.username, User.fullname,User.email,User.gender, User.phone,
+                                    User.birth_date, User.state, User.role,Transaction.id, Transaction.account_no,
+                                    Transaction.balance, Transaction.receiver_ac, Transaction.tran_type, Transaction.tran_date).join(User, User.id == Transaction.uid, isouter=True).all()
     return render_template('logs.html', logs = logs)

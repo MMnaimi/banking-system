@@ -25,30 +25,61 @@ CSS
 .card-registration .select-arrow {
   top: 13px;
 }
+.form-control-lg {
+  font-size: 15px !important;
+}
 #sign-up input, #sign-up input:focus {
   background-color: #2dc997;
   border-color: #2dc997;
-}
-#sign-up a {
-  color: #2dc997;
-  text-decoration: none;
-  margin-left: 5px;
+  font-size: 14px;
 }
 #sign-in input, #sign-in input:focus {
   background-color: #2dc997;
   border-color: #2dc997;
+  font-size: 14px;
+ 
 }
-#sign-in a {
+#sign-in a, #sign-up a {
   color: #2dc997;
   text-decoration: none;
-  margin-left: 5px;
+  font-size: 12px;
+}
+#sign-in span, #sign-up span{
+  font-size: 12px;
 }
 #reset a {
   text-decoration: none;
   font-size: 12px;
-  color: rgb(105, 168, 140);
+  color: rgb(135, 136, 136);
 }
 #reset a:hover {
   font-size: 13px;
-  color: #2dc997;
+
+}
+.auth-form-area{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 14px;
+}
+.auth-form-area .img-up{
+  width: 320px;
+  height: 200px;
+}
+.auth-form-area img{
+  width: 200px;
+  height: 200px;
+}
+.asterisk{
+  color: rgb(233, 92, 67);
+}
+.login-pass{
+  position: relative;
+}
+#togglePassword{
+  color: #77c9af;
+  position: absolute;
+  top: 39px;
+  right: 15px;
+  cursor: pointer;
 }

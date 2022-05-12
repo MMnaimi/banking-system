@@ -175,6 +175,7 @@ table.table .avatar {
     background-color: #2dc997;
     border-color: #2dc997;
     color: white;
+    font-size: 14px;
 }
 .table-responsive{
     width: 1200px;
@@ -182,5 +183,18 @@ table.table .avatar {
 }
 
 #info {
+    font-size: 14px;
+}
+
+.log_type_filter_dropdown {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: transparent;
+    margin-left: 3px;
+
+}
+
+.form-control-lg{
     font-size: 14px;
 }

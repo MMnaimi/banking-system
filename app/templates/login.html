@@ -11,66 +11,69 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static',filename='css/forms1.css') }}">
-    <title>{% block title %}Login{% endblock %}</title>
+    <title>{% block title %}Sign in{% endblock %}</title>
 </head>
 
 <body>
     <section class="vh-100 gradient-custom">
         <div class="container py-5 h-100">
-            <div class="row justify-content-center align-items-center vh-100">
-                <div class="col-12 col-lg-9 col-xl-7">
-                    <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
-                        <div class="card-body p-4 p-md-5">
-                            <h3 class="mb-4 pb-2 pb-md-0 mb-md-5 text-center">login</h3>
-                            <div class="message_area">
-                                {% with messages = get_flashed_messages(with_categories=true) %}
-                                {% if messages %}
-                                {% for category, message in messages %}
-                                {% if category == 'error' %}
-                                <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
+            <div class="row justify-content-center vh-100">
+                <div class="auth-form-area">
+                    <img class="img-fluid" src="../static/img/login.svg" alt="sign in">
+                    <div class="col-12 col-lg-9 col-xl-7">
+                        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                            <div class="card-body p-4 p-md-5">
+                                <div class="message_area">
+                                    {% with messages = get_flashed_messages(with_categories=true) %}
+                                    {% if messages %}
+                                    {% for category, message in messages %}
+                                    {% if category == 'error' %}
+                                    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-success alter-dismissable fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                    {% endwith %}
+    
                                 </div>
-                                {% else %}
-                                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"
-                                        aria-label="Close"></button>
-                                </div>
-                                {% endif %}
-                                {% endfor %}
-                                {% endif %}
-                                {% endwith %}
-
+                                <form method="POST">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4 pb-2">
+                                            <div class="form-outline">
+                                                {{ form.email.label(class="form-label", for="emailAddress") }}
+                                                {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 mb-4">
+                                            <div class="form-outline login-pass">
+                                                {{ form.password.label(class="form-label", for="login_password") }}
+                                                {{ form.password(class="form-control form-control-lg",id="login_password") }}
+                                                <span onclick="show_password()" class="float-end" id="togglePassword">Show</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 pt-2" id="sign-in">
+                                        {{ form.submit(class="btn btn-primary btn-lg", value="Sign in") }}
+                                        <span >Don't Have an account?</span> <a href="/register">Sign up</a>
+                                    </div>
+                                    <div class="mt-4 pt-2" id="reset">
+                                        <a href="{{ url_for('reset_password') }}">Forget
+                                            password?</a>
+                                    </div>
+    
+                                </form>
                             </div>
-                            <form method="POST">
-                                <div class="row">
-                                    <div class="col-md-12 mb-4 pb-2">
-                                        <div class="form-outline">
-                                            {{ form.email.label(class="form-label", for="emailAddress") }}
-                                            {{ form.email(class="form-control form-control-lg", id="emailAddress") }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12 mb-4">
-                                        <div class="form-outline">
-                                            {{ form.password.label(class="form-label", for="password") }}
-                                            {{ form.password(class="form-control form-control-lg",id="password") }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-4 pt-2" id="sign-in">
-                                    {{ form.submit(class="btn btn-primary btn-lg", value="Log in") }}
-                                    Don't Have an account? <a href="/register" style="font-weight: bold;">Sign up</a>
-                                </div>
-                                <div class="mt-4 pt-2" id="reset">
-                                    <a href="{{ url_for('reset_password') }}" style="font-weight: bold;">Forget
-                                        password</a>
-                                </div>
-
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -86,7 +89,7 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="../static/js/app.js"></script>
 
 </body>
 
