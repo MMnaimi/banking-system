@@ -2,8 +2,6 @@
 
 {% block pagetitle %} Deposit {% endblock %}
 
-{% block trans_title %} Deposit money to your account {% endblock %}
-
 {% block trans_body %}
 
 <form action="" method="post">
@@ -33,15 +31,15 @@
     <div class="col-md-3 mt-4" id="info">
       <div>
         <strong>Account Holder: </strong>
-        <span style="color:#2dc997; font-weight:1000;">{{ current_user.fullname.upper() }}</span>
+        <span >{{ current_user.fullname.upper() }}</span>
       </div>
       <div class="mt-1">
         <strong>Account No: </strong>
-        <span style="color:#2dc997; font-weight:1000;">{{ account.account_no }}</span>
+        <span >{{ account.account_no }}</span>
       </div>
       <div class="mt-1">
         <strong>Current balance:</strong>
-        <span style="color:#2dc997; font-weight:1000;">{{ '{:,.2f} AFs'.format(account.balance) }}</span>
+        <span class="balance">{{ '{:,.2f} AFs'.format(account.balance) }}</span>
       </div>
     </div>
   </div>

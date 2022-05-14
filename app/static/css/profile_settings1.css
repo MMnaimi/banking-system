@@ -55,3 +55,16 @@
     color: white;
     background-color: #2dc997;
 }
+.logo{
+    color: #2dc997 !important;
+}
+.balance {
+    text-decoration: underline;
+    font-size: 25px;
+}
+.copy-right {
+    color: white;
+}
+.footer-link, .footer-link:hover{
+    color: #2dc997;
+}

@@ -10,6 +10,8 @@ body {
     padding: 20px 25px;
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    margin-top: 20px;
+    border-radius: 5px;
 }
 .table-title {
     padding-bottom: 15px;
@@ -184,6 +186,11 @@ table.table .avatar {
 
 #info {
     font-size: 14px;
+}
+#info .balance{ 
+    font-size: 20px;
+    font-family: cursive;
+    font-weight: bold;
 }
 
 .log_type_filter_dropdown {

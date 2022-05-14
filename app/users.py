@@ -207,9 +207,12 @@ def profile():
     if not current_user.is_authenticated:
         return render_template('404.html')
 
-    user_record = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, \
-                                User.birth_date, Account.account_no, Account.balance).join(Account, User.id == Account.uid, isouter=True).filter(User.id == current_user.id).first()
-    return render_template('profile.html', user = user_record)
+    user_record = db.session.query(User, User.id, User.username, User.fullname,User.email,User.gender, User.phone, 
+                                User.birth_date, Account.account_no, Account.balance).join(Account, User.id == Account.uid,
+                                isouter=True).filter(User.id == current_user.id).first()
+    birth_date =datetime.strftime(datetime.strptime(user_record.birth_date, '%Y-%m-%d'), '%Y-%b-%d') 
+
+    return render_template('profile.html', user = user_record, date = birth_date)
      
 @app.route('/user/update-profile', methods=['GET', 'POST'])
 @login_required
