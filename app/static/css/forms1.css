@@ -83,3 +83,6 @@ CSS
   right: 15px;
   cursor: pointer;
 }
+input:focus{
+  border: 1px solid #2dc997 !important;
+}

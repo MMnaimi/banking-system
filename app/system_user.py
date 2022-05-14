@@ -96,7 +96,7 @@ def update_state(uid):
             return redirect(url_for('user_list'))
 
         user.state = 'active'
-        account = Account(account_no=str(user.id)+str(randint(100, 1000))+user.username, acc_status=True, uid=user.id)
+        account = Account(account_no=randint(13**(13-1), (13**13)-1), acc_status=True, uid=user.id)
         db.session.add(account)
         db.session.commit()
         return redirect(url_for('user_list'))

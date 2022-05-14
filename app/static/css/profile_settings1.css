@@ -68,3 +68,6 @@
 .footer-link, .footer-link:hover{
     color: #2dc997;
 }
+input:focus{
+    border: 1px solid #2dc997 !important;
+}
