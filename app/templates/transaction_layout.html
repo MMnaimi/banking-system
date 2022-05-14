@@ -30,36 +30,49 @@
       </nav>
       <div style="min-height: 89vh;">
     <div class="container">
-        <div class="table-responsive">
-            <!-- Section message -->
-            <div class="message_area">
-                {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Section message -->
+        <div class="message_area">
+            {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-                </div>
-                {% else %}
-                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-                </div>
+                    {% for category, message in messages %}
+                        {% if category == 'error' %}
+                        <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success alter-dismissable fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
+            {% endwith %}
 
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-3 trans_card p-3">
+                <strong class="d-block">Account Holder: </strong>
+                <span>{{ current_user.fullname.upper() }}</span>
             </div>
-            <div class="table-wrapper">
-                {% block trans_body %}
-
-
-                {% endblock %}
+            <div class="col-md-3 trans_card p-3">
+                <strong class="d-block">Current balance:</strong>
+                <span class="balance">{{ '{:,.2f} AFN'.format(account.balance) }}</span>
             </div>
+            <div class="col-md-3 trans_card p-3">
+                <strong class="d-block">Account No: </strong>
+                <span>{{ account.account_no }}</span>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            {% block trans_body %}
+
+
+            {% endblock %}
         </div>
     </div>
 </div> 

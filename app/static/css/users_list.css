@@ -188,7 +188,7 @@ table.table .avatar {
     font-size: 14px;
 }
 #info .balance{ 
-    font-size: 20px;
+    font-size: 15px;
     font-family: cursive;
     font-weight: bold;
 }
@@ -204,4 +204,12 @@ table.table .avatar {
 
 .form-control-lg{
     font-size: 14px;
+}
+
+.trans_card {
+    background-color: white;
+    text-align: center;
+    border-radius: 12px;
+    margin-top: 12px;
+    margin: 0 auto;
 }

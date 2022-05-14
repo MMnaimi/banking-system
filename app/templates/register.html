@@ -11,13 +11,22 @@
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static',filename='css/forms1.css') }}">
+  <link rel="stylesheet" href="../static/css/profile_settings1.css">
   <title>Sign up</title>
 </head>
 
 <body>
-  <section class="vh-100 gradient-custom">
-    <div class="container py-5 h-100">
-      <div class="row justify-content-center vh-100">
+  <nav class="navbar navbar-light bg-light container-fluid" style="background-color: rgb(80,80,80) !important;">
+    <div class="container-fluid">
+      <a class="navbar-brand logo" href="/">Home</a>
+      <a href="/login" style="text-decoration: none;"><span class="logo"> Sign in</span></a>
+      
+    </div>
+  </nav>
+<div style="min-height: 90vh;">
+  <section class=" gradient-custom">
+    <div class="container py-5">
+      <div class="row justify-content-center">
         <div class="auth-form-area">
           <img class="img-fluid img-up" src="../static/img/sign-up.png" alt="sign in">
           <div class="col-12 col-lg-9 col-xl-7">
@@ -152,7 +161,7 @@
   
                   <div class="mt-4 pt-2" id="sign-up">
                     {{ form.submit(class="btn btn-primary btn-lg", value="Sign up") }}
-                    <span>Have you already and account?</span> <a href="/login">Log in</a>
+                    <span>Have you already and account?</span> <a href="/login">Sign in</a>
                   </div>
   
                 </form>
@@ -162,6 +171,15 @@
         </div>
       </div>
     </div>
+  </div> 
+  <footer class="text-center" style="background-color: rgb(104, 104, 104);">  
+      <!-- Copyright -->
+      <div class="text-center text-dark p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      <span class="copy-right"> © 2022 Copyright:</span>
+      <a class="footer-link" href="/">Banking System</a>
+      </div>
+      <!-- Copyright -->
+  </footer> 
   </section>
 
 

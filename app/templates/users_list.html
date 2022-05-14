@@ -10,110 +10,130 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="../static/css/users_list.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
+<link rel="stylesheet" href="../static/css/profile_settings1.css">
+<link rel="stylesheet" href="../static/css/users_list.css">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="row md-5">
-        <div class="table-responsive">
-            <div class="message_area">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, message in messages %}
-                {% if category == 'error' %}
-                <div class="alert alert-danger alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+    <nav class="navbar navbar-light bg-light container-fluid" style="background-color: rgb(80,80,80) !important;">
+        <div class="container-fluid">
+          <a class="navbar-brand logo" href="/">Home</a>
+          <h3 style="color: #2dc997;">User List</h3>
+          <a href="/user/profile" style="text-decoration: none;"><span class="logo"> {{ current_user.username.upper() }}</span></a>
+          
+        </div>
+      </nav>
+<div style="min-height: 81vh;">
+    <div class="container">
+        <div class="row md-5">
+            <div class="table-responsive">
+                <div class="message_area">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    {% if category == 'error' %}
+                    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success alter-dismissable fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
                 </div>
-                {% else %}
-                <div class="alert alert-success alter-dismissable fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close float-right" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-                </div>
-                {% endif %}
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
-
-            </div>
-            <div class="table-wrapper">
-               
-                <table class="display d-none" id="userList" data-page-length='10'>
-                    {% if users %}
-                    <thead>
-                        <tr>
-                            <th class="text-center">Uid</th>
-                            <th class="text-center">Full name</th>						
-                            <th class="text-center">Username</th>
-                            <th class="text-center">Gender</th>
-                            <th class="text-center">Email</th>
-                            <th class="text-center">Phone</th>
-                            <th class="text-center">Role</th>
-                            <th class="text-center">Account No.</th>
-                            <th class="text-center">State</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        {% for user in users %}
-                        <tr>
-                            <td class="text-center">{{ user.id }}</td>
-                            <td class="text-center">{{ user.fullname }}</td>
-                            <td class="text-center">{{ user.username }}</td>
-                            <td class="text-center">{{ user.gender.capitalize() }}</td>
-                            <td class="text-center">{{ user.email }}</td>
-                            <td class="text-center">{{ user.phone }}</td>
-
-                            {% if user.account_no %}
-                            <td class="text-center">{{ user.account_no }}</td>
-                            {% else %}
-                            <td class="text-center" style="color:#848080;">Not applicable</td>
-                            {% endif %}
-                            <td class="text-center">
-                                {% if user.role == 'admin' %}
-                                Admin
-                                {% elif user.role == 'sysuser' %}
-                                System User
-                                {% else %}
-                                Customer
-                                {% endif %}
-                            </td>  
-                            <td class="text-center" style="text-align: center;">
-                                {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
-                                <a class="state-active" href="/update-state/{{ user.id }}">Activate</a>
-                                {% elif user.state == 'active' and user.role != 'admin' %}
-                                <a class="state-pending" href="/update-state/{{ user.id }}">Deactivate</a>
-                                {% else %}
-                                __
-                                {% endif %}
-                            </td>
-
-                            <td class="text-center">
-                                {% if user.role != 'admin' %}
-                                <a href="/admin/user-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
-                                <a id="delete-user" onclick="delete_confirm(event)" href="/delete/{{user.id}}" class="text-danger" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
-                                {% else %}
-                                __
-                                {% endif %}
-                            </td>
-                        </tr>
+            
+                <div class="table-wrapper">
+                
+                    <table class="display d-none" id="userList" data-page-length='10'>
+                        {% if users %}
+                        <thead>
+                            <tr>
+                                <th class="text-center">Uid</th>
+                                <th class="text-center">Full name</th>						
+                                <th class="text-center">Username</th>
+                                <th class="text-center">Gender</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Phone</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Account No.</th>
+                                <th class="text-center">State</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
                         
-                        {% endfor %}
-                    </tbody>
-                </table>                
-                {% else %}
-                <span class="success"><h3>No User Register Yet</h3></span>
-                {% endif %}
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td class="text-center">{{ user.id }}</td>
+                                <td class="text-center">{{ user.fullname }}</td>
+                                <td class="text-center">{{ user.username }}</td>
+                                <td class="text-center">{{ user.gender.capitalize() }}</td>
+                                <td class="text-center">{{ user.email }}</td>
+                                <td class="text-center">{{ user.phone }}</td>
+
+                                {% if user.account_no %}
+                                <td class="text-center">{{ user.account_no }}</td>
+                                {% else %}
+                                <td class="text-center" style="color:#848080;">Not applicable</td>
+                                {% endif %}
+                                <td class="text-center">
+                                    {% if user.role == 'admin' %}
+                                    Admin
+                                    {% elif user.role == 'sysuser' %}
+                                    System User
+                                    {% else %}
+                                    Customer
+                                    {% endif %}
+                                </td>  
+                                <td class="text-center" style="text-align: center;">
+                                    {% if user.role != 'admin' and user.state == 'pending' or user.state == 'deactive' %}
+                                    <a class="state-active" href="/update-state/{{ user.id }}">Activate</a>
+                                    {% elif user.state == 'active' and user.role != 'admin' %}
+                                    <a class="state-pending" href="/update-state/{{ user.id }}">Deactivate</a>
+                                    {% else %}
+                                    __
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center">
+                                    {% if user.role != 'admin' %}
+                                    <a href="/admin/user-settings/{{ user.id }}" class="settings" title="Settings"><i class="material-icons">&#xE8B8;</i></a>
+                                    <a id="delete-user" onclick="delete_confirm(event)" href="/delete/{{user.id}}" class="text-danger" title="Delete"><i class="material-icons">&#xE5C9;</i></a>
+                                    {% else %}
+                                    __
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </tbody>
+                    </table>                
+                    {% else %}
+                    <span class="success"><h3>No User Register Yet</h3></span>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
-</div>   
+    </div> 
+    <footer class="text-center" style="background-color: rgb(104, 104, 104);">  
+        <!-- Copyright -->
+        <div class="text-center text-dark p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        <span class="copy-right"> © 2022 Copyright:</span>
+        <a class="footer-link" href="/">Banking System</a>
+        </div>
+        <!-- Copyright -->
+    </footer>   
 <script src="../static//js/app.js"></script>  
 <script src="../static/js/msg.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>

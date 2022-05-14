@@ -4,11 +4,10 @@
 
 {% block trans_body %}
 
-<form action="" method="post">
+<form action="" method="post" style="margin:0 auto;">
   {{ form.csrf_token() }}
   <div class="row">
-    <div class="col-md-6 mb-4">
-      <div class="form-outline mb-2">
+    <div class="col-md-6 mb-2">
         {{ form.amount.label(class="form-label", for="amount") }}
         {{ form.amount(class="form-control form-control-lg",id="amount") }}
         {% if form.amount.errors %}
@@ -16,8 +15,8 @@
           <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
         {% endfor %}
         {% endif %}
-      </div>
-      <div class="form-outline">
+    </div>
+    <div class="col-md-6 mb-2">
         {{ form.password.label(class="form-label", for="password") }}
         {{ form.password(class="form-control form-control-lg",id="password") }}
         {% if form.password.errors %}
@@ -25,32 +24,12 @@
           <p class="text-danger" style="font-size: 12px;">{{ err }}</p>
         {% endfor %}
         {% endif %}
-        
-      </div>
-    </div>
-    <div class="col-md-3 mt-4" id="info">
-      <div>
-        <strong>Account Holder: </strong>
-        <span >{{ current_user.fullname.upper() }}</span>
-      </div>
-      <div class="mt-1">
-        <strong>Account No: </strong>
-        <span >{{ account.account_no }}</span>
-      </div>
-      <div class="mt-1">
-        <strong>Current balance:</strong>
-        <span class="balance">{{ '{:,.2f} AFs'.format(account.balance) }}</span>
-      </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-6 mb-4">
-      <div class="form-outline">
-        {{ form.submit(class="btn btn-trans", value="Deposit") }}
-      </div>
-
+        {{ form.submit(class="btn btn-trans", value="Withdraw") }}
     </div>
   </div>
 </form>
-
 {% endblock %}

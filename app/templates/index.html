@@ -58,8 +58,10 @@
 
               </ul>
             </li>
+            {% endif %}
+            {% if current_user.role == 'normal' or not current_user.is_authenticated %}
             <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-          {% endif %}
+            {% endif %}
 
           {% if current_user.is_authenticated %}
             <li><a class="nav-link scrollto sign-item" id="signin-item" href='/user/profile'><b style="color:#2dc997">{{
@@ -278,7 +280,7 @@
       </div>
     </section><!-- End Team Section -->
 
-    {% if current_user.role == 'normal' %}
+    {% if current_user.role == 'normal' or not current_user.is_authenticated%}
       <!-- ======= Contact Section ======= -->
       <section id="contact">
         <div class="container">
