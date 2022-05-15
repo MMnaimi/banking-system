@@ -2,7 +2,9 @@ from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms import RegisterationForm, LoginForm, WithdrawForm, DepositForm, TransferForm, PasswordResetForm, UserProfileEditForm
+from app.forms.auth_form import RegisterationForm, LoginForm, PasswordResetForm
+from app.forms.profile_form import UserProfileEditForm
+from app.forms.transaction_forms import WithdrawForm, DepositForm, TransferForm
 from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime

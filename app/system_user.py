@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import is_admin, is_sys_user
-from app.forms import RegisterationForm, AdminProfileEditForm
+from app.forms.profile_form import AdminProfileEditForm
 from app.models import User, Account, Transaction
 from flask_login import current_user, login_required
 from datetime import datetime
