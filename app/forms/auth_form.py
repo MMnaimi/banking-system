@@ -1,3 +1,4 @@
+from cProfile import label
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, RadioField, PasswordField, DateField, SelectField
 from wtforms.validators import DataRequired, Length, EqualTo, Email, Regexp
@@ -23,6 +24,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField(label='Log in')
 
 
-class PasswordResetForm(FlaskForm):
+class ForgetForm(FlaskForm):
     email = StringField(label='Email', validators=[DataRequired(), Email()])
     submit = SubmitField(label = 'Reset Password')
+
+class PasswordResetFrom(FlaskForm):
+    current_password = PasswordField(label='Current Password', validators=[DataRequired()])

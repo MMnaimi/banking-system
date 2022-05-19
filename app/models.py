@@ -1,7 +1,8 @@
 from flask import render_template
-from app import db,login_manager
+from app import app, db,login_manager
 from flask_login import UserMixin
 from flask import render_template
+from itsdangerous import TimedSerializer as serializer
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -73,6 +74,12 @@ class User(db.Model, UserMixin):
             value['state'] = False
             value['message'] = "Email Already Exist"
         return value
+
+        
+    def get_reset_token(self):
+        obj = serializer(app.config['SECRET_KEY'], 1800)
+        token = obj.dumps({'user_id':self.id}).decode('utf-8')
+        return token
 
 
 

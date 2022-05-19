@@ -2,12 +2,15 @@ from flask import Flask, render_template, redirect, request, flash, url_for
 from app import app, db
 from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms.auth_form import RegisterationForm, LoginForm, PasswordResetForm
+from app.forms.auth_form import RegisterationForm, LoginForm, ForgetForm
 from app.forms.profile_form import UserProfileEditForm
 from app.forms.transaction_forms import WithdrawForm, DepositForm, TransferForm
 from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
+
+
+
 
 
 @app.route("/")
@@ -241,12 +244,22 @@ def update_user():
 
     return render_template('index.html')
 
-@app.route('/pwdresetreq', methods=['GET', 'POST'])
+@app.route('/forget-password', methods=['GET', 'POST'])
 def reset_password():
-    form = PasswordResetForm()
+    form = ForgetForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('users.home'))
     if request.method == 'POST':
-        pass
-    return render_template('reset_pass.html', form= form)
+        formDict = request.form.to_dict()
+        if formDict.get('submit_button'):
+            user = User.query.filter_by(email = formDict.get('email')).first()
+            # send_reset_email(user)
+            print('user::',user)
+            
+            print('an email has been sent to your email with reset instructions')
+            return redirect(url_for('users.login'))
+        
+    return render_template('forget_password.html', form= form)
 
 @app.route('/message', methods=['GET', 'POST'])
 def send_message():

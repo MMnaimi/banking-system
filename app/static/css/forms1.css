@@ -86,3 +86,6 @@ CSS
 input:focus{
   border: 1px solid #2dc997 !important;
 }
+.forget-label{
+  font-weight: bold;
+}
