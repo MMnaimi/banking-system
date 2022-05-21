@@ -30,7 +30,7 @@
                     <span class="text-black-50"><span> {{ user.email }} </span>
                 </div>
             </div>
-                <div class="col-md-5 border-right">
+                <div class="col-md-7 border-right">
                     <div class="message_area">
                         {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
@@ -57,52 +57,49 @@
                     </div>
                     <div class="p-3 py-5">
                         <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <a class="edit-profile" href="/user/profile-settings">Edit</a>
+                            </div>
                             <h4 class="text-right">{{ user.fullname }} </h4>
                         </div>
                         <hr>
-                        <form action="/update-user/{{ user.id }}" method="post">
                             <div class="row mt-3">
-                                <div class="col-md-12 mt-3">
-                                    <strong>Username:</strong>
-                                     {{ user.username }}
+                                <div class="profile-item mt-3">
+                                    <span class="profile-item-key">Username:</span>
+                                    <span class="profile-item-value float-end">{{ user.username }}</span> 
                                  </div>
-                                <div class="col-md-12 mt-3">
-                                    <strong>Email:</strong>
-                                    {{ user.email }}
+                                 <div class="profile-item mt-3" style="margin-top: 25px;">
+                                    <span class="profile-item-key">Gender:</span>
+                                    <span class="profile-item-value float-end">{{ user.gender.capitalize() }}</span> 
+                                    
+                                    
                                 </div>
-                                <div class="col-md-12 mt-3">
-                                    <strong>Phone:</strong>
-                                    {{ user.phone }}
-
-                                </div>
-                                <div class="col-md-12 mt-3" style="margin-top: 25px;">
-                                    <strong>Gender:</strong>
-                                        {{ user.gender.capitalize() }}
-                                   
-
-                                </div>
-                                <div class="col-md-6 mt-3">
-                                    <strong>Birthday:</strong> 
-                                    {{  date }}
-
+                                <div class="profile-item mt-3">
+                                    <span class="profile-item-key">Birthday:</span> 
+                                    <span class="profile-item-value float-end">{{  date }}</span>
+                                    
                                 </div>
                                 {% if current_user.role != 'admin' %}
-                                <div class="col-md-12 mt-3">
-                                    <strong>Account NO:</strong> 
-                                    <span>{{ user.account_no }}</span style="color: #2ac;">
-
-                                </div>
-                                <div class="col-md-12 mt-3">
-                                    <strong>Balance:</strong> 
-                                    <span class="balance">{{ '{:,.2f} AFN'.format(user.balance) }}</span>
-
-                                </div>
-                                {% endif %}
-                                
-                            <div class="mt-5">
-                                <a class="edit-profile" href="/user/profile-settings">Edit</a>
-                            </div>
-                        </form>
+                                <div class="profile-item mt-3">
+                                    <span class="profile-item-key">Account NO:</span> 
+                                    <span class="profile-item-value float-end">{{ user.account_no }}</span style="color: #2ac;">
+                                        
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <span class="profile-item-key">Balance:</span> 
+                                        <span class="balance">{{ '{:,.2f} AFN'.format(user.balance) }}</span>
+                                        
+                                    </div>
+                                    {% endif %}
+                                    <div class="profile-item mt-3">
+                                        <span class="profile-item-key">Email:</span>
+                                        <span class="profile-item-value float-end">{{ user.email }}</span>
+                                    </div>
+                                    <div class="profile-item mt-3">
+                                        <span class="profile-item-key">Phone:</span>
+                                        <span class="profile-item-value float-end">{{ user.phone }}</span> 
+    
+                                    </div>
                     </div>
                 </div>
         </div>

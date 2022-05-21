@@ -44,14 +44,14 @@
     margin-top: 25px;
 }
 .edit-profile {
-    padding: 8px 21px;
+    padding: 5px 15px;
     border: 1px solid #2dc997;
     color: #2dc997;
     text-decoration: none;
-    border-radius: 3px;
+    font-size: 14px;
 }
 .edit-profile:hover {
-    padding: 10px 23px;
+    padding: 5px 20px;
     color: white;
     background-color: #2dc997;
 }
@@ -70,4 +70,12 @@
 }
 input:focus{
     border: 1px solid #2dc997 !important;
+}
+.profile-item-key{
+    font-weight: bold;
+    font-size: 14px;
+}
+.profile-item-value{
+    font-size: 14px;
+    color: #797676;
 }

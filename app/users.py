@@ -8,6 +8,7 @@ from app.forms.transaction_forms import WithdrawForm, DepositForm, TransferForm
 from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
+from itsdangerous import BadTimeSignature, URLSafeTimedSerializer, SignatureExpired
 
 
 
@@ -247,18 +248,13 @@ def update_user():
 @app.route('/forget-password', methods=['GET', 'POST'])
 def reset_password():
     form = ForgetForm()
-    if current_user.is_authenticated:
-        return redirect(url_for('users.home'))
     if request.method == 'POST':
-        formDict = request.form.to_dict()
-        if formDict.get('submit_button'):
-            user = User.query.filter_by(email = formDict.get('email')).first()
-            # send_reset_email(user)
-            print('user::',user)
-            
-            print('an email has been sent to your email with reset instructions')
-            return redirect(url_for('users.login'))
-        
+        email = form.email.data.lower()
+        user = User.query.filter_by(email=email).first()
+        if user:
+           pass
+        else:
+            pass
     return render_template('forget_password.html', form= form)
 
 @app.route('/message', methods=['GET', 'POST'])
