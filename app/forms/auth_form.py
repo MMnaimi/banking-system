@@ -25,8 +25,11 @@ class LoginForm(FlaskForm):
 
 
 class ForgetForm(FlaskForm):
-    email = StringField(label='Email', validators=[DataRequired(), Email()])
+    email = StringField(label='Email', render_kw={'placeholder':'Enter Email'}, validators=[DataRequired(), Email()])
     submit = SubmitField(label = 'Reset Password')
 
 class PasswordResetFrom(FlaskForm):
     current_password = PasswordField(label='Current Password', validators=[DataRequired()])
+    password = PasswordField(label='Passsword', render_kw={'placeholder':'Enter password'}, validators=[Length(min = 8, max = 16), DataRequired()])
+    confirm_password = PasswordField(label='Confirm Password', render_kw={'placeholder':'Confirm Password'}, validators=[Length(min = 8, max = 16), DataRequired(), EqualTo('password')])
+    submit = SubmitField(label = 'Change Password')
