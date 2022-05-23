@@ -1,13 +1,16 @@
 from flask import Flask, render_template, redirect, request, flash, url_for
-from app import app, db
+from app import app, db, mail
 from app.functions import for_normal_users, check_password, balance_validaty, log_transaction
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.forms.auth_form import RegisterationForm, LoginForm, PasswordResetForm
+from app.forms.auth_form import RegisterationForm, LoginForm, ForgetForm, PasswordResetFrom
 from app.forms.profile_form import UserProfileEditForm
 from app.forms.transaction_forms import WithdrawForm, DepositForm, TransferForm
 from app.models import User, Account, Message, Transaction
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
+from flask_mail import Message as Message2
+from itsdangerous import BadTimeSignature, URLSafeTimedSerializer, SignatureExpired, BadSignature
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 
 @app.route("/")
@@ -241,12 +244,70 @@ def update_user():
 
     return render_template('index.html')
 
-@app.route('/pwdresetreq', methods=['GET', 'POST'])
-def reset_password():
-    form = PasswordResetForm()
+@app.route('/forget-password', methods=['GET', 'POST'])
+def forget_password():
+    form = ForgetForm()
     if request.method == 'POST':
-        pass
-    return render_template('reset_pass.html', form= form)
+        if not form.validate():
+            return render_template('forget_password.html', form= form)
+        email = form.email.data.lower()
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return "Email Address Does not exists."
+        token = serializer.dumps(email, salt='wallet')
+        msg = Message2('Reset Password Link', sender='info@Wallet.com', recipients=[email])
+        link =  url_for('reset_password', token=token, _external=True)
+        msg.html = f'''<div class="grey-bg container pt-4">
+            <div style = 'background: #f2f2f2; padding: 12px;'>
+                <h4 style="text-align:center">Banking System</h4>
+            </div>
+            <hr>
+            <div style="margin-top:30px; background: #fdfdfd; padding: 12px; border-radius: 8px;">
+                 Hi <strong style="color:#00b08c;">{ user.fullname }</strong>,    
+                <p class="pt-2">
+                    Someone has requested a link to change your password. You can do this through the button below.
+                </p>
+                <div class="text-center">
+                    <a href="{ link }">
+                      <button style="padding:6px; cursor:pointer; ">Reset Password </button>
+                    </a>
+                </div>
+                <hr style="margin-top:30px;">
+                <p style="margin-top:30px">
+                    If you did not request the reset password so please ignore this message.
+                </p>
+                <p>
+                    Regards. <br>
+                    <strong class="d-block">Banking System</strong>
+                </p>
+            </div>
+        </div>'''
+        mail.send(msg)
+        flash("Email sent to your email address")
+        return redirect(url_for('login'))
+
+    return render_template('forget_password.html', form= form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    form = PasswordResetFrom()
+    try:
+        email = serializer.loads(token, salt='wallet', max_age=1800)
+        user = User.query.filter_by(email=email).first()
+        if request.method == 'POST':
+            user.password = generate_password_hash(form.password.data)
+            db.session.commit()
+            flash('Password changed successfully!')
+            return redirect(url_for('login'))
+
+    except SignatureExpired:
+        return '<h2>The token is expired!</h2>'
+    except BadTimeSignature:
+        return '<h2> Invalid token or token expired'
+    except BadSignature:
+        return '<h2> Invalid token or token expired'
+
+    return render_template('reset_password.html', form = form)
 
 @app.route('/message', methods=['GET', 'POST'])
 def send_message():

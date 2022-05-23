@@ -1,8 +1,7 @@
 from flask import render_template
-from app import db,login_manager
+from app import app, db,login_manager
 from flask_login import UserMixin
 from flask import render_template
-
 @login_manager.user_loader
 def load_user(user_id):
     """
@@ -73,8 +72,6 @@ class User(db.Model, UserMixin):
             value['state'] = False
             value['message'] = "Email Already Exist"
         return value
-
-
 
 class Account(db.Model, UserMixin):
     """This Class represent the accounts table in the database.

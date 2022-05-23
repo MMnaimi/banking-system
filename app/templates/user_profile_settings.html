@@ -11,6 +11,8 @@
   
 
     <link rel="stylesheet" href="../static/css/profile_settings1.css">
+
+
     <title>{{ user.username }} Settings</title>
 </head>
 
@@ -31,15 +33,15 @@
                     <span class="text-black-50"><span> {{ form.email.data }} </span>
                 </div>
             </div>
-                <div class="col-md-5 border-right">
+                <div class="col-md-7 border-right">
                     <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">{{ user.fullname }} </h4>
+                        <div class="d-flex justify-content-center align-items-center mb-3">
+                            <h4>{{ user.fullname }} </h4>
                         </div>
                         <form action="/user/update-profile" method="POST">
                             {{ form.csrf_token() }}
-                            <div class="row mt-2">
-                                <div class="col-md-6">
+                            <div class="row mt-3">
+                                <div class="col-md-12 mt-3">
                                     {{ form.fullname.label(class="labels") }}
                                     {{ form.fullname(class="form-control") }}
                                     {% if  form.fullname.errors %}
@@ -48,7 +50,7 @@
                                         {% endfor %}
                                     {% endif %}
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12 mt-3">
                                     {{ form.username.label(class="labels") }}
                                     {{ form.username(class="form-control") }}
                                     {% if  form.username.errors %}
@@ -61,8 +63,6 @@
                                     {% endif %}
 
                                 </div>
-                            </div>
-                            <div class="row mt-3">
                                 <div class="col-md-12 mt-3">
                                     {{ form.email.label(class="labels") }}
                                     {{ form.email(class="form-control") }}
@@ -108,7 +108,7 @@
                                 </div>
                                 
                             </div>
-                            <div class="mt-5 text-center">
+                            <div class="mt-5">
                                 {{ form.submit(class="btn profile-button", value="Save Profile") }}
                             </div>
                         </form>
